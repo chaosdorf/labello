@@ -26,7 +26,7 @@ def printText(txt, charSize = '42', font = 'lettergothic'):
     #txt = 28*"x"
     #txt = "öäü".decode('utf8').encode('iso-8859-1')
 
-    printjob.send(txt)
+    printjob.send(txt.decode('utf8').encode('iso-8859-1'))
     printjob.print_page('full')
 
 class MyHandler(BaseHTTPRequestHandler):
