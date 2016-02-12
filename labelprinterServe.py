@@ -1,10 +1,13 @@
 #!/usr/bin/env python2
 # coding: utf-8
-#https://fragments.turtlemeat.com/pythonwebserver.php
-import string,cgi,time
+# https://fragments.turtlemeat.com/pythonwebserver.php
+import string
+import cgi
+import time
 from os import curdir, sep
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 #import pri
+
 
 class MyHandler(BaseHTTPRequestHandler):
 
@@ -29,13 +32,13 @@ class MyHandler(BaseHTTPRequestHandler):
         printjob.command_mode()
         printjob.initialize()
         printjob.select_font(font)
-        printjob.char_size(charSize) # 28 chars
+        printjob.char_size(charSize)  # 28 chars
         printjob.alignment(align)
-        #printjob.char_size('75')
+        # printjob.char_size('75')
         printjob.bold(bold)
         printjob.char_style(charStyle)
         printjob.cut_setting(cut)
-        #printjob.select_charset("Germany")
+        # printjob.select_charset("Germany")
         #printjob.select_char_code_table("western european")
         #txt = 28*"x"
         #txt = "öäü".decode('utf8').encode('iso-8859-1')
@@ -46,54 +49,65 @@ class MyHandler(BaseHTTPRequestHandler):
     def getCmbFromList(self, ls):
         cmb = ''
         for itm in ls:
-            cmb += '<option value="'+ str(itm) +'">'+ str(itm) +'</option>'
+            cmb += '<option value="' + str(itm) + '">' + str(itm) + '</option>'
         return cmb
-
 
     def do_GET(self):
         try:
             sizes = [
-                       '42', 
-                       '24',
-                       '32',
-                       '48',
-                       '33', 
-                       '38',
-                       '46', 
-                       '50',
-                       '58', 
-                       '67', 
-                       '75', 
-                       '83', 
-                       '92', 
-                       '100', 
-                       '117', 
-                       '133', 
-                       '150', 
-                       '167', 
-                       '200', 
-                       '233', 
-                       '11', 
-                       '44', 
-                       '77', 
-                       '111', 
-                       '144'
+                '42',
+                '24',
+                '32',
+                '48',
+                '33',
+                '38',
+                '46',
+                '50',
+                '58',
+                '67',
+                '75',
+                '83',
+                '92',
+                '100',
+                '117',
+                '133',
+                '150',
+                '167',
+                '200',
+                '233',
+                '11',
+                '44',
+                '77',
+                '111',
+                '144'
             ]
             sizesCmb = self.getCmbFromList(sizes)
 
-            
-            fontsOutline = [
-                    'lettergothic',
-                    'brusselsoutline',
-                    'helsinkioutline'
-            ]
-            
-            fontsBitMap = [
-                    'brougham',
-                    'lettergothicbold',
-                    'brusselsbit',
-                    'helsinkibit',
+            '''
+                    <Bit map fonts>
+                    'brougham'
+                    'lettergothicbold'
+                    'brusselsbit'
+                    'helsinkibit'
                     'sandiego'
+                    <Outline fonts>
+                    'lettergothic'
+                    'brusselsoutline'
+                    'helsinkioutline'
+            '''
+
+            fontsOutline = [
+                'lettergothic',
+                'brusselsoutline',
+                'helsinkioutline'
+            ]
+
+            fontsBitMap = [
+                'brougham',
+                'lettergothicbold',
+                'brusselsbit',
+                'helsinkibit',
+                'sandiego'
             ]
 
             fontsCmb = '<optgroup label="Outline Fonts">'
@@ -103,7 +117,6 @@ class MyHandler(BaseHTTPRequestHandler):
             fontsCmb += '<optgroup label="Bitmap Fonts">'
             fontsCmb += self.getCmbFromList(fontsBitMap)
             fontsCmb += '</optgroup>'
-
 
             aligns = [
                 'left',
@@ -150,9 +163,9 @@ class MyHandler(BaseHTTPRequestHandler):
             self.wfile.write(template)
 
             return
+
         except Exception as ex:
-            self.send_error(404,'File Not Found: {} {}'.format(self.path, ex))
-     
+            self.send_error(404, 'File Not Found: {} {}'.format(self.path, ex))
 
     def do_POST(self):
         global rootnode
@@ -163,19 +176,21 @@ class MyHandler(BaseHTTPRequestHandler):
             if ctype == 'multipart/form-data':
                 query = cgi.parse_multipart(self.rfile, pdict)
             elif ctype == 'application/x-www-form-urlencoded':
-                query = cgi.parse(self.rfile, pdict)
+                length = int(self.headers.getheader('content-length'))
+                query = cgi.parse_qs(self.rfile.read(length), keep_blank_values=1)
             self.send_response(301)
             print query
             self.end_headers()
             text = query.get('text')
             print "filecontent", text
             self.wfile.write("<HTML>POST OK.<BR><BR>")
-            #self.wfile.write(upfilecontent[0]);
-            
+            # self.wfile.write(upfilecontent[0]);
+
             finalTxt = ''
+            print text
             for txt in text:
                 finalTxt += txt
-             
+
             print finalTxt
 
             self.printText(
@@ -191,6 +206,7 @@ class MyHandler(BaseHTTPRequestHandler):
             print ex
             self.wfile.write(ex)
 
+
 def main():
     try:
         server = HTTPServer(('', 8000), MyHandler)
@@ -202,4 +218,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
