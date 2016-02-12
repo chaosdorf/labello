@@ -6,30 +6,38 @@ from os import curdir, sep
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 #import pri
 
-def printText(txt, charSize = '42', font = 'lettergothic'):
-    print "start printing:", txt
-    import socket
-    from brotherprint import BrotherPrint
-
-    f_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    f_socket.connect(('172.22.27.26', 9100))
-    printjob = BrotherPrint(f_socket)
-
-    printjob.command_mode()
-    printjob.initialize()
-    printjob.select_font(font)
-    printjob.char_size(charSize) # 28 chars
-    #printjob.char_size('75')
-    printjob.bold('on')
-    #printjob.select_charset("Germany")
-    #printjob.select_char_code_table("western european")
-    #txt = 28*"x"
-    #txt = "öäü".decode('utf8').encode('iso-8859-1')
-
-    printjob.send(txt.decode('utf8').encode('iso-8859-1'))
-    printjob.print_page('full')
-
 class MyHandler(BaseHTTPRequestHandler):
+
+    def printText(self, txt, charSize = '42', font = 'lettergothic', align = 'left'):
+        print "start printing:", txt
+        import socket
+        from brotherprint import BrotherPrint
+
+        f_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        f_socket.connect(('172.22.27.26', 9100))
+        printjob = BrotherPrint(f_socket)
+
+        printjob.command_mode()
+        printjob.initialize()
+        printjob.select_font(font)
+        printjob.char_size(charSize) # 28 chars
+        printjob.alignment(align)
+        #printjob.char_size('75')
+        printjob.bold('on')
+        #printjob.select_charset("Germany")
+        #printjob.select_char_code_table("western european")
+        #txt = 28*"x"
+        #txt = "öäü".decode('utf8').encode('iso-8859-1')
+
+        printjob.send(txt.decode('utf8').encode('iso-8859-1'))
+        printjob.print_page('full')
+
+    def getCmbFromList(self, ls):
+        cmb = ''
+        for itm in ls:
+            cmb += '<option value="'+ itm +'">'+ itm +'</option>'
+        return cmb
+
 
     def do_GET(self):
         try:
@@ -61,9 +69,7 @@ class MyHandler(BaseHTTPRequestHandler):
                        '144'
             ]
 
-            sizesCmb = ''
-            for size in sizes:
-                sizesCmb += '<option value="'+ size +'">'+ size +'</option>'
+            sizesCmb = self.getCmbFromList(sizes)
             
             '''
                     <Bit map fonts>
@@ -91,58 +97,44 @@ class MyHandler(BaseHTTPRequestHandler):
                     'helsinkibit',
                     'sandiego'
             ]
-            #<optgroup label="Italienische Gerichte">
-			#	<option value="piz"> Pizza </option>
-			#	<option value="tor"> Tortelloni </option>
-			#	<option value="bif"> Bifsteca </option>
-			#</optgroup>
+
             fontsCmb = '<optgroup label="Outline Fonts">'
-            for font in fontsOutline:
-                fontsCmb += '<option value="'+ font +'">'+ font +'</option>'
-                
+            fontsCmb += self.getCmbFromList(fontsOutline)
             fontsCmb += '</optgroup>'
+
             fontsCmb += '<optgroup label="Bitmap Fonts">'
-            for font in fontsBitMap:
-                fontsCmb += '<option value="'+ font +'">'+ font +'</option>'
+            fontsCmb += self.getCmbFromList(fontsBitMap)
             fontsCmb += '</optgroup>'
-                
+
+
+            aligns = [
+                'left',
+                'center',
+                'right',
+                'justified'
+            ]
+            alignsCmb = self.getCmbFromList(aligns)
+
+
             self.send_response(200)
             self.send_header('Content-type',	'text/html')
             self.end_headers()
-            self.wfile.write('''<html>
-                    <head>
-                        <meta charset="utf-8"/>
-                        <title>laibelprinter</title>
-                        <!-- Latest compiled and minified CSS -->
-                        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
-                        <!-- Optional theme -->
-                        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+            template = ''
+            if self.path == '/':
+                template = open('templates/base.html').read()
+            elif self.path == '/magic':
+                template = open('templates/magic.html').read()
+            else:
+                self.wfile.write('NOTHING')
+                return
 
-                        <!-- Latest compiled and minified JavaScript -->
-                        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-                        <style type="text/css">
-                            body {
-                                font-family: monospace;
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        <form method="POST" enctype="multipart/form-data" class="form-group">
-                            <textarea name="text" cols="28" rows="15"></textarea>
-                            <div class="form-group">
-                                <label for="fontSize">Font Size</label><select name="fontSize">'''+ sizesCmb +'''</select>
-                            </div>
-                            <div class="form-group">
-                                <label for="fontSize">Font</label><select name="font">'''+ fontsCmb +'''</select>
-                            </div>
-                            <div class="form-group">
-                                <input type="submit" value="PRINT" class="btn btn-primary">
-                            </div>
-                        </form>
-                    </body>
-                </html>
-            ''')
+            template = template.replace('{{sizesCmb}}', sizesCmb)
+            template = template.replace('{{fontsCmb}}', fontsCmb)
+            template = template.replace('{{alignsCmb}}', alignsCmb)
+
+            self.wfile.write(template)
+
             return
                 
         except IOError:
@@ -171,7 +163,7 @@ class MyHandler(BaseHTTPRequestHandler):
                 finalTxt += txt
              
             print query.get('text')[0]
-            printText(finalTxt, query.get('fontSize')[0], query.get('font')[0])
+            self.printText(finalTxt, query.get('fontSize')[0], query.get('font')[0], query.get('align')[0])
         except Exception as ex:
             print ex
             self.wfile.write(ex)

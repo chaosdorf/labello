@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>laibelprinter</title>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+        <style type="text/css">
+            .container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .container100 {
+                flex-direction: column;
+                height: 100%;
+            }
+            .form-group {
+                display: flex;
+            }
+            .label100 {
+                flex: 1;
+            }
+            body {
+
+                font-family: monospace;
+            }
+        </style>
+    </head>
+    <body>
+        <form method="POST" enctype="multipart/form-data" class="form-group container container100">
+            <textarea name="text" cols="28" rows="15"></textarea>
+            <div>
+                <div class="form-group">
+                    <label class="label100" for="fontSize">Font Size:</label>
+                    <select name="fontSize">{{sizesCmb}}</select>
+                </div>
+                <div class="form-group">
+                    <label class="label100" for="fontSize">Font:</label>
+                    <select name="font">{{fontsCmb}}</select>
+                </div>
+                <div class="form-group">
+                    <label class="label100" for="fontSize">Align:</label>
+                    <select name="align">{{alignsCmb}}</select>
+                </div>
+            </div>
+
+            <div class="form-group container">
+                <input type="submit" value="PRINT" class="btn btn-primary ">
+            </div>
+        </form>
+    </body>
+</html>
