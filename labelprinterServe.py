@@ -34,14 +34,9 @@ class MyHandler(BaseHTTPRequestHandler):
         printjob.select_font(font)
         printjob.char_size(charSize)  # 28 chars
         printjob.alignment(align)
-        # printjob.char_size('75')
         printjob.bold(bold)
         printjob.char_style(charStyle)
         printjob.cut_setting(cut)
-        # printjob.select_charset("Germany")
-        #printjob.select_char_code_table("western european")
-        #txt = 28*"x"
-        #txt = "öäü".decode('utf8').encode('iso-8859-1')
 
         printjob.send(txt.decode('utf8').encode('iso-8859-1'))
         printjob.print_page('full')
@@ -168,28 +163,29 @@ class MyHandler(BaseHTTPRequestHandler):
             self.send_error(404, 'File Not Found: {} {}'.format(self.path, ex))
 
     def do_POST(self):
-        global rootnode
+        self.send_response(301)
         try:
             ctype, pdict = cgi.parse_header(self.headers.getheader('content-type'))
             print ctype, pdict
             query = None
+
             if ctype == 'multipart/form-data':
                 query = cgi.parse_multipart(self.rfile, pdict)
             elif ctype == 'application/x-www-form-urlencoded':
                 length = int(self.headers.getheader('content-length'))
                 query = cgi.parse_qs(self.rfile.read(length), keep_blank_values=1)
-            self.send_response(301)
+
             print query
             self.end_headers()
             text = query.get('text')
-            print "filecontent", text
-            self.wfile.write("<HTML>POST OK.<BR><BR>")
-            # self.wfile.write(upfilecontent[0]);
 
             finalTxt = ''
             print text
             for txt in text:
                 finalTxt += txt
+
+            self.wfile.write("POST OK.\n")
+            self.wfile.write("start printing: " + finalTxt + "\n")
 
             print finalTxt
 
@@ -203,8 +199,8 @@ class MyHandler(BaseHTTPRequestHandler):
                 cut=query.get('cut', ['full'])[0],
             )
         except Exception as ex:
-            print ex
-            self.wfile.write(ex)
+            print 'ERROR:', ex
+            self.wfile.write("ERROR: " + str(ex))
 
 
 def main():
