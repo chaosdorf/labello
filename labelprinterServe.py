@@ -8,7 +8,7 @@ from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 
 class MyHandler(BaseHTTPRequestHandler):
 
-    def printText(self, txt, charSize = '42', font = 'lettergothic', align = 'left'):
+    def printText(self, txt, charSize='42', font='lettergothic', align='left', bold='off'):
         print "start printing:", txt
         import socket
         from brotherprint import BrotherPrint
@@ -23,7 +23,7 @@ class MyHandler(BaseHTTPRequestHandler):
         printjob.char_size(charSize) # 28 chars
         printjob.alignment(align)
         #printjob.char_size('75')
-        printjob.bold('on')
+        printjob.bold(bold)
         #printjob.select_charset("Germany")
         #printjob.select_char_code_table("western european")
         #txt = 28*"x"
@@ -35,7 +35,7 @@ class MyHandler(BaseHTTPRequestHandler):
     def getCmbFromList(self, ls):
         cmb = ''
         for itm in ls:
-            cmb += '<option value="'+ itm +'">'+ itm +'</option>'
+            cmb += '<option value="'+ str(itm) +'">'+ str(itm) +'</option>'
         return cmb
 
 
@@ -68,21 +68,8 @@ class MyHandler(BaseHTTPRequestHandler):
                        '111', 
                        '144'
             ]
-
             sizesCmb = self.getCmbFromList(sizes)
-            
-            '''
-                    <Bit map fonts>
-                    'brougham'
-                    'lettergothicbold'
-                    'brusselsbit'
-                    'helsinkibit'
-                    'sandiego'
-                    <Outline fonts>
-                    'lettergothic'
-                    'brusselsoutline'
-                    'helsinkioutline'
-            '''
+
             
             fontsOutline = [
                     'lettergothic',
@@ -115,9 +102,8 @@ class MyHandler(BaseHTTPRequestHandler):
             ]
             alignsCmb = self.getCmbFromList(aligns)
 
-
             self.send_response(200)
-            self.send_header('Content-type',	'text/html')
+            self.send_header('Content-type', 'text/html')
             self.end_headers()
 
             template = ''
@@ -131,7 +117,8 @@ class MyHandler(BaseHTTPRequestHandler):
             template = template.replace('{{sizesCmb}}', sizesCmb)
             template = template.replace('{{fontsCmb}}', fontsCmb)
             template = template.replace('{{alignsCmb}}', alignsCmb)
-            
+
+
             self.wfile.write(template)
 
             return
@@ -144,24 +131,34 @@ class MyHandler(BaseHTTPRequestHandler):
         try:
             ctype, pdict = cgi.parse_header(self.headers.getheader('content-type'))
             print ctype, pdict
+            query = None
             if ctype == 'multipart/form-data':
-                query=cgi.parse_multipart(self.rfile, pdict)
+                query = cgi.parse_multipart(self.rfile, pdict)
             elif ctype == 'application/x-www-form-urlencoded':
-                query=cgi.parse(self.rfile, pdict)
+                query = cgi.parse(self.rfile, pdict)
             self.send_response(301)
             print query
             self.end_headers()
             text = query.get('text')
             print "filecontent", text
-            self.wfile.write("<HTML>POST OK.<BR><BR>");
+            self.wfile.write("<HTML>POST OK.<BR><BR>")
             #self.wfile.write(upfilecontent[0]);
             
             finalTxt = ''
             for txt in text:
                 finalTxt += txt
              
-            print query.get('text')[0]
-            self.printText(finalTxt, query.get('fontSize')[0], query.get('font')[0], query.get('align')[0])
+            print finalTxt
+
+            _bold = query.get('bold', ['off'])[0]
+
+            self.printText(
+                finalTxt,
+                charSize=query.get('fontSize')[0],
+                font=query.get('font')[0],
+                align=query.get('align')[0],
+                bold=_bold
+            )
         except Exception as ex:
             print ex
             self.wfile.write(ex)
