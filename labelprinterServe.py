@@ -8,7 +8,16 @@ from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 
 class MyHandler(BaseHTTPRequestHandler):
 
-    def printText(self, txt, charSize='42', font='lettergothic', align='left', bold='off'):
+    def printText(
+            self,
+            txt,
+            charSize='42',
+            font='lettergothic',
+            align='left',
+            bold='off',
+            charStyle='normal',
+            cut='full'
+    ):
         print "start printing:", txt
         import socket
         from brotherprint import BrotherPrint
@@ -24,6 +33,8 @@ class MyHandler(BaseHTTPRequestHandler):
         printjob.alignment(align)
         #printjob.char_size('75')
         printjob.bold(bold)
+        printjob.char_style(charStyle)
+        printjob.cut_setting(cut)
         #printjob.select_charset("Germany")
         #printjob.select_char_code_table("western european")
         #txt = 28*"x"
@@ -102,6 +113,22 @@ class MyHandler(BaseHTTPRequestHandler):
             ]
             alignsCmb = self.getCmbFromList(aligns)
 
+            charStyles = [
+                'normal',
+                'outline',
+                'shadow',
+                'outlineshadow'
+            ]
+            charStylesCmb = self.getCmbFromList(charStyles)
+
+            cuts = [
+                'full',
+                'half',
+                'chain',
+                'special'
+            ]
+            cutsCmb = self.getCmbFromList(cuts)
+
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
@@ -117,7 +144,8 @@ class MyHandler(BaseHTTPRequestHandler):
             template = template.replace('{{sizesCmb}}', sizesCmb)
             template = template.replace('{{fontsCmb}}', fontsCmb)
             template = template.replace('{{alignsCmb}}', alignsCmb)
-
+            template = template.replace('{{charStylesCmb}}', charStylesCmb)
+            template = template.replace('{{cutsCmb}}', cutsCmb)
 
             self.wfile.write(template)
 
@@ -150,14 +178,14 @@ class MyHandler(BaseHTTPRequestHandler):
              
             print finalTxt
 
-            _bold = query.get('bold', ['off'])[0]
-
             self.printText(
                 finalTxt,
-                charSize=query.get('fontSize')[0],
-                font=query.get('font')[0],
-                align=query.get('align')[0],
-                bold=_bold
+                charSize=query.get('fontSize', [42])[0],
+                font=query.get('font', ['lettergothic'])[0],
+                align=query.get('align', ['left'])[0],
+                bold=query.get('bold', ['off'])[0],
+                charStyle=query.get('charStyle', ['normal'])[0],
+                cut=query.get('cut', ['full'])[0],
             )
         except Exception as ex:
             print ex
