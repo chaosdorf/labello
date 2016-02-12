@@ -78,19 +78,6 @@ class MyHandler(BaseHTTPRequestHandler):
             ]
             sizesCmb = self.getCmbFromList(sizes)
 
-            '''
-                    <Bit map fonts>
-                    'brougham'
-                    'lettergothicbold'
-                    'brusselsbit'
-                    'helsinkibit'
-                    'sandiego'
-                    <Outline fonts>
-                    'lettergothic'
-                    'brusselsoutline'
-                    'helsinkioutline'
-            '''
-
             fontsOutline = [
                 'lettergothic',
                 'brusselsoutline',
