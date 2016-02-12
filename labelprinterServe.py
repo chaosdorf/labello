@@ -126,19 +126,17 @@ class MyHandler(BaseHTTPRequestHandler):
             elif self.path == '/magic':
                 template = open('templates/magic.html').read()
             else:
-                self.wfile.write('NOTHING')
-                return
+                template = 'NOTHING'
 
             template = template.replace('{{sizesCmb}}', sizesCmb)
             template = template.replace('{{fontsCmb}}', fontsCmb)
             template = template.replace('{{alignsCmb}}', alignsCmb)
-
+            
             self.wfile.write(template)
 
             return
-                
-        except IOError:
-            self.send_error(404,'File Not Found: %s' % self.path)
+        except Exception as ex:
+            self.send_error(404,'File Not Found: {} {}'.format(self.path, ex))
      
 
     def do_POST(self):
