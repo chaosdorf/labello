@@ -47,6 +47,12 @@ class MyHandler(BaseHTTPRequestHandler):
             cmb += '<option value="' + str(itm) + '">' + str(itm) + '</option>'
         return cmb
 
+    def getPolymerFromList(self, ls):
+        poly = '';
+        for itm in ls:
+            poly += '<paper-item>' + str(itm) + '</paper-item>'
+        return poly
+
     def do_GET(self):
         try:
             sizes = [
@@ -77,6 +83,7 @@ class MyHandler(BaseHTTPRequestHandler):
                 '144'
             ]
             sizesCmb = self.getCmbFromList(sizes)
+            sizesPoly = self.getPolymerFromList(sizes)
 
             fontsOutline = [
                 'lettergothic',
@@ -100,6 +107,12 @@ class MyHandler(BaseHTTPRequestHandler):
             fontsCmb += self.getCmbFromList(fontsBitMap)
             fontsCmb += '</optgroup>'
 
+            fontsPoly = '<polymer-item disabled>Outline Fonts</polymer-item>'
+            fontsPoly += self.getPolymerFromList(fontsOutline)
+
+            fontsPoly += '<polymer-item disabled>Bitmap Fonts</polymer-item>'
+            fontsPoly += self.getPolymerFromList(fontsBitMap)
+
             aligns = [
                 'left',
                 'center',
@@ -107,6 +120,7 @@ class MyHandler(BaseHTTPRequestHandler):
                 'justified'
             ]
             alignsCmb = self.getCmbFromList(aligns)
+            alignsPoly = self.getPolymerFromList(aligns)
 
             charStyles = [
                 'normal',
@@ -115,6 +129,7 @@ class MyHandler(BaseHTTPRequestHandler):
                 'outlineshadow'
             ]
             charStylesCmb = self.getCmbFromList(charStyles)
+            charStylePoly = self.getPolymerFromList(charStyles)
 
             cuts = [
                 'full',
@@ -123,6 +138,7 @@ class MyHandler(BaseHTTPRequestHandler):
                 'special'
             ]
             cutsCmb = self.getCmbFromList(cuts)
+            cutsPoly = self.getPolymerFromList(cuts)
 
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
@@ -137,10 +153,15 @@ class MyHandler(BaseHTTPRequestHandler):
                 template = 'NOTHING'
 
             template = template.replace('{{sizesCmb}}', sizesCmb)
+            template = template.replace('{{sizesPoly}}', sizesPoly)
             template = template.replace('{{fontsCmb}}', fontsCmb)
+            template = template.replace('{{fontsPoly}}', fontsPoly)
             template = template.replace('{{alignsCmb}}', alignsCmb)
+            template = template.replace('{{alignsPoly}}', alignsPoly)
             template = template.replace('{{charStylesCmb}}', charStylesCmb)
+            template = template.replace('{{charStylePoly}}', charStylePoly)
             template = template.replace('{{cutsCmb}}', cutsCmb)
+            template = template.replace('{{cutsPoly}}', cutsPoly)
 
             self.wfile.write(template)
 

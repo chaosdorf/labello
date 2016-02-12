@@ -1,10 +1,88 @@
 <!DOCTYPE html>
 <html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title></title>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="initial-scale=1, width=device-width">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>laibelprinter</title>
+  <link rel="import" href="https://cdn.rawgit.com/Download/polymer-cdn/master/lib/paper-dropdown-menu/paper-dropdown-menu.html">
+  <link rel="import"
+  href="https://cdn.rawgit.com/Download/polymer-cdn/master/lib/paper-menu/paper-menu.html">
+  <link rel="import" href="https://cdn.rawgit.com/Download/polymer-cdn/master/lib/paper-input/paper-textarea.html">
+  <link rel="import" href="https://cdn.rawgit.com/Download/polymer-cdn/master/lib/iron-form/iron-form.html">
+  <link rel="import" href="https://cdn.rawgit.com/Download/polymer-cdn/master/lib/paper-button/paper-button.html">
+  <link rel="import" href="https://cdn.rawgit.com/Download/polymer-cdn/master/lib/paper-item/paper-item.html">
+  <link rel="import" href="https://cdn.rawgit.com/Download/polymer-cdn/master/lib/paper-listbox/paper-listbox.html">
+  <link rel="import" href="https://cdn.rawgit.com/Download/polymer-cdn/master/lib/paper-toggle-button/paper-toggle-button.html">
 </head>
-<body>
+<body style="display: flex; justify-content: center">
+  <noscript>
+    <form method="POST" enctype="multipart/form-data">
+      <textarea name="text" cols="28" rows="15"></textarea>
+      <div>
+        <label for="fontSize">Font Size:</label>
+        <select name="fontSize">{{sizesCmb}}</select>
+      </div>
+      <div>
+        <label for="fontSize">Font:</label>
+        <select name="font">{{fontsCmb}}</select>
+      </div>
+      <div>
+        <label for="fontSize">Align:</label>
+        <select name="align">{{alignsCmb}}</select>
+      </div>
+      <input type="submit" value="PRINT">
+    </form>
+  </noscript>
+  <style>
+  paper-toggle-button {
+    display: flex;
+    -webkit-user-select: none;
+  }
+  .toggle-label.paper-toggle-button {
+    flex: 1;
+    justify-content: flex-end;
+    display: flex;
+  }
+  </style>
+  <form style="display: flex; justify-content: center; flex-direction: column; width: 30%" action="/" is="iron-form" id="form" method="post">
+    <paper-textarea rows="3" autofocus name="text" label="Label" required></paper-textarea>
+    <paper-dropdown-menu required name="fontSize" horizontal-align="middle" label="Font Size">
+      <paper-listbox selected="0" class="dropdown-content">
+        {{sizesPoly}}
+      </paper-listbox>
+    </paper-dropdown-menu>
+    <paper-dropdown-menu required name="font" horizontal-align="middle" label="Font">
+      <paper-listbox selected="1" class="dropdown-content">
+        {{fontsPoly}}
+      </paper-listbox>
+    </paper-dropdown-menu>
+    <paper-dropdown-menu required name="align" horizontal-align="middle" label="Align">
+      <paper-listbox selected="0" class="dropdown-content">
+        {{alignsPoly}}
+      </paper-listbox>
+    </paper-dropdown-menu>
+    <paper-dropdown-menu required name="charStyle" horizontal-align="middle" label="Char Style">
+      <paper-listbox selected="0" class="dropdown-content">
+        {{charStylePoly}}
+      </paper-listbox>
+    </paper-dropdown-menu>
+    <br>
+    <paper-toggle-button name="bold">Bold</paper-toggle-button>
+    <br>
+    <paper-button onclick="submitForm()" raised>Print</paper-button>
+  </form>
+  <script>
+  function submitForm() {
+    document.getElementById('form').submit();
+  }
 
+  document.onkeydown = function(e) {
+    if (e.code === "Enter" && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      submitForm();
+    }
+  }
+  </script>
 </body>
 </html>
