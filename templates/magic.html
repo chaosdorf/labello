@@ -62,42 +62,40 @@ paper-toggle-button {
   display: flex;
 }
 </style>
-<div id="formCont" style="display: none; visibility: hidden;">
-  <form style="display: flex; justify-content: center; flex-direction: column; width: 30%" action="/" is="iron-form" id="form" method="post">
-    <paper-textarea rows="3" autofocus name="text" label="Label" required></paper-textarea>
-    <paper-dropdown-menu required name="fontSize" horizontal-align="middle" label="Font Size">
-      <paper-listbox selected="0" class="dropdown-content">
-        {{sizesPoly}}
-      </paper-listbox>
-    </paper-dropdown-menu>
-    <paper-dropdown-menu required name="font" horizontal-align="middle" label="Font">
-      <paper-listbox selected="1" class="dropdown-content">
-        {{fontsPoly}}
-      </paper-listbox>
-    </paper-dropdown-menu>
-    <paper-dropdown-menu required name="align" horizontal-align="middle" label="Align">
-      <paper-listbox selected="0" class="dropdown-content">
-        {{alignsPoly}}
-      </paper-listbox>
-    </paper-dropdown-menu>
-    <paper-dropdown-menu required name="charStyle" horizontal-align="middle" label="Char Style">
-      <paper-listbox selected="0" class="dropdown-content">
-        {{charStylePoly}}
-      </paper-listbox>
-    </paper-dropdown-menu>
-    <br>
-    <paper-toggle-button name="bold">Bold</paper-toggle-button>
-    <br>
-    <paper-button onclick="submitForm()" raised>Print</paper-button>
-  </form>
-</div>
+<form style="display: none; visibility: hidden; justify-content: center; flex-direction: column; width: 30%" action="/" is="iron-form" id="form" method="post">
+  <paper-textarea rows="3" autofocus name="text" label="Label" required></paper-textarea>
+  <paper-dropdown-menu required name="fontSize" horizontal-align="middle" label="Font Size">
+    <paper-listbox selected="0" class="dropdown-content">
+      {{sizesPoly}}
+    </paper-listbox>
+  </paper-dropdown-menu>
+  <paper-dropdown-menu required name="font" horizontal-align="middle" label="Font">
+    <paper-listbox selected="1" class="dropdown-content">
+      {{fontsPoly}}
+    </paper-listbox>
+  </paper-dropdown-menu>
+  <paper-dropdown-menu required name="align" horizontal-align="middle" label="Align">
+    <paper-listbox selected="0" class="dropdown-content">
+      {{alignsPoly}}
+    </paper-listbox>
+  </paper-dropdown-menu>
+  <paper-dropdown-menu required name="charStyle" horizontal-align="middle" label="Char Style">
+    <paper-listbox selected="0" class="dropdown-content">
+      {{charStylePoly}}
+    </paper-listbox>
+  </paper-dropdown-menu>
+  <br>
+  <paper-toggle-button name="bold">Bold</paper-toggle-button>
+  <br>
+  <paper-button onclick="submitForm()" raised>Print</paper-button>
+</form>
 <script>
 function submitForm() {
   document.getElementById('form').submit();
 }
 
-document.getElementById('formCont').style.display = 'block';
-document.getElementById('formCont').style.visibility = 'visible';
+document.getElementById('form').style.display = 'flex';
+document.getElementById('form').style.visibility = 'visible';
 
 document.onkeydown = function(e) {
   if (e.code === "Enter" && (e.ctrlKey || e.metaKey)) {
