@@ -6,7 +6,7 @@ import cgi
 import time
 from os import curdir, sep
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
-#import pri
+import labelprinterServeConf as conf
 
 
 class MyHandler(BaseHTTPRequestHandler):
@@ -26,7 +26,7 @@ class MyHandler(BaseHTTPRequestHandler):
         from brotherprint import BrotherPrint
 
         f_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        f_socket.connect(('172.22.27.26', 9100))
+        f_socket.connect((conf.printerIp, conf.printerPort))
         printjob = BrotherPrint(f_socket)
 
         printjob.command_mode()
@@ -214,7 +214,7 @@ class MyHandler(BaseHTTPRequestHandler):
 def main():
     server = None
     try:
-        server = HTTPServer(('', 8000), MyHandler)
+        server = HTTPServer(('', conf.serverPort), MyHandler)
         print 'started httpserver...'
         server.serve_forever()
     except KeyboardInterrupt:
