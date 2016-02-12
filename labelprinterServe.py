@@ -208,13 +208,15 @@ class MyHandler(BaseHTTPRequestHandler):
 
 
 def main():
+    server = None
     try:
         server = HTTPServer(('', 8000), MyHandler)
         print 'started httpserver...'
         server.serve_forever()
     except KeyboardInterrupt:
         print '^C received, shutting down server'
-        server.socket.close()
+        if server is not None:
+            server.socket.close()
 
 if __name__ == '__main__':
     main()
