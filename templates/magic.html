@@ -18,51 +18,52 @@
 <body style="display: flex; justify-content: center">
   <noscript>
     <form method="POST" target="_blank" enctype="multipart/form-data" class="form-group container container100">
-        <textarea name="text" cols="28" rows="15"></textarea>
-        <div>
-            <div class="form-group">
-                <label class="label100" for="fontSize">Font Size:</label>
-                <select name="fontSize" id="fontSize">{{sizesCmb}}</select>
-            </div>
-            <div class="form-group">
-                <label class="label100" for="font">Font:</label>
-                <select name="font" id="font">{{fontsCmb}}</select>
-            </div>
-            <div class="form-group">
-                <label class="label100" for="align">Align:</label>
-                <select name="align" id="align">{{alignsCmb}}</select>
-            </div>
-            <div class="form-group">
-                <label class="label100" for="bold">Bold:</label>
-                <input type="checkbox" name="bold" id="bold" value="on">
-            </div>
-            <div class="form-group">
-                <label class="label100" for="charStyle">Char Style:</label>
-                <select name="charStyle" id="charStyle">{{charStylesCmb}}</select>
-            </div>
-            <!--div class="form-group">
-                <label class="label100" for="cut">Cutter:</label>
-                <select name="cut" id="cut">{{cutsCmb}}</select>
-            </div-->
+      <textarea name="text" cols="28" rows="15"></textarea>
+      <div>
+        <div class="form-group">
+          <label class="label100" for="fontSize">Font Size:</label>
+          <select name="fontSize" id="fontSize">{{sizesCmb}}</select>
         </div>
+        <div class="form-group">
+          <label class="label100" for="font">Font:</label>
+          <select name="font" id="font">{{fontsCmb}}</select>
+        </div>
+        <div class="form-group">
+          <label class="label100" for="align">Align:</label>
+          <select name="align" id="align">{{alignsCmb}}</select>
+        </div>
+        <div class="form-group">
+          <label class="label100" for="bold">Bold:</label>
+          <input type="checkbox" name="bold" id="bold" value="on">
+        </div>
+        <div class="form-group">
+          <label class="label100" for="charStyle">Char Style:</label>
+          <select name="charStyle" id="charStyle">{{charStylesCmb}}</select>
+        </div>
+        <!--div class="form-group">
+        <label class="label100" for="cut">Cutter:</label>
+        <select name="cut" id="cut">{{cutsCmb}}</select>
+      </div-->
+    </div>
 
-        <div class="form-group container">
-            <input type="submit" value="PRINT" class="btn btn-primary ">
-        </div>
-    </form>
-  </noscript>
-  <style>
-  paper-toggle-button {
-    display: flex;
-    -webkit-user-select: none;
-  }
-  .toggle-label.paper-toggle-button {
-    flex: 1;
-    justify-content: flex-end;
-    display: flex;
-  }
-  </style>
-  <form style="display: none; justify-content: center; flex-direction: column; width: 30%" action="/" is="iron-form" id="form" method="post">
+    <div class="form-group container">
+      <input type="submit" value="PRINT" class="btn btn-primary ">
+    </div>
+  </form>
+</noscript>
+<style>
+paper-toggle-button {
+  display: flex;
+  -webkit-user-select: none;
+}
+.toggle-label.paper-toggle-button {
+  flex: 1;
+  justify-content: flex-end;
+  display: flex;
+}
+</style>
+<div id="formCont" style="display: none; visibility: hidden;">
+  <form style="display: flex; justify-content: center; flex-direction: column; width: 30%" action="/" is="iron-form" id="form" method="post">
     <paper-textarea rows="3" autofocus name="text" label="Label" required></paper-textarea>
     <paper-dropdown-menu required name="fontSize" horizontal-align="middle" label="Font Size">
       <paper-listbox selected="0" class="dropdown-content">
@@ -89,19 +90,21 @@
     <br>
     <paper-button onclick="submitForm()" raised>Print</paper-button>
   </form>
-  <script>
-  function submitForm() {
-    document.getElementById('form').submit();
-  }
+</div>
+<script>
+function submitForm() {
+  document.getElementById('form').submit();
+}
 
-  document.getElementById('form').style.display = 'flex';
+document.getElementById('formCont').style.display = 'block';
+document.getElementById('formCont').style.visibility = 'visible';
 
-  document.onkeydown = function(e) {
-    if (e.code === "Enter" && (e.ctrlKey || e.metaKey)) {
-      e.preventDefault();
-      submitForm();
-    }
+document.onkeydown = function(e) {
+  if (e.code === "Enter" && (e.ctrlKey || e.metaKey)) {
+    e.preventDefault();
+    submitForm();
   }
-  </script>
+}
+</script>
 </body>
 </html>
