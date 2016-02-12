@@ -17,21 +17,38 @@
 </head>
 <body style="display: flex; justify-content: center">
   <noscript>
-    <form method="POST" enctype="multipart/form-data">
-      <textarea name="text" cols="28" rows="15"></textarea>
-      <div>
-        <label for="fontSize">Font Size:</label>
-        <select name="fontSize">{{sizesCmb}}</select>
-      </div>
-      <div>
-        <label for="fontSize">Font:</label>
-        <select name="font">{{fontsCmb}}</select>
-      </div>
-      <div>
-        <label for="fontSize">Align:</label>
-        <select name="align">{{alignsCmb}}</select>
-      </div>
-      <input type="submit" value="PRINT">
+    <form method="POST" target="_blank" enctype="multipart/form-data" class="form-group container container100">
+        <textarea name="text" cols="28" rows="15"></textarea>
+        <div>
+            <div class="form-group">
+                <label class="label100" for="fontSize">Font Size:</label>
+                <select name="fontSize" id="fontSize">{{sizesCmb}}</select>
+            </div>
+            <div class="form-group">
+                <label class="label100" for="font">Font:</label>
+                <select name="font" id="font">{{fontsCmb}}</select>
+            </div>
+            <div class="form-group">
+                <label class="label100" for="align">Align:</label>
+                <select name="align" id="align">{{alignsCmb}}</select>
+            </div>
+            <div class="form-group">
+                <label class="label100" for="bold">Bold:</label>
+                <input type="checkbox" name="bold" id="bold" value="on">
+            </div>
+            <div class="form-group">
+                <label class="label100" for="charStyle">Char Style:</label>
+                <select name="charStyle" id="charStyle">{{charStylesCmb}}</select>
+            </div>
+            <!--div class="form-group">
+                <label class="label100" for="cut">Cutter:</label>
+                <select name="cut" id="cut">{{cutsCmb}}</select>
+            </div-->
+        </div>
+
+        <div class="form-group container">
+            <input type="submit" value="PRINT" class="btn btn-primary ">
+        </div>
     </form>
   </noscript>
   <style>
