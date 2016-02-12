@@ -45,7 +45,7 @@
     display: flex;
   }
   </style>
-  <form style="display: flex; justify-content: center; flex-direction: column; width: 30%" action="/" is="iron-form" id="form" method="post">
+  <form style="display: none; justify-content: center; flex-direction: column; width: 30%" action="/" is="iron-form" id="form" method="post">
     <paper-textarea rows="3" autofocus name="text" label="Label" required></paper-textarea>
     <paper-dropdown-menu required name="fontSize" horizontal-align="middle" label="Font Size">
       <paper-listbox selected="0" class="dropdown-content">
@@ -76,6 +76,8 @@
   function submitForm() {
     document.getElementById('form').submit();
   }
+
+  document.getElementById('form').style.display = 'flex';
 
   document.onkeydown = function(e) {
     if (e.code === "Enter" && (e.ctrlKey || e.metaKey)) {
