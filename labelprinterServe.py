@@ -55,35 +55,49 @@ class MyHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         try:
-            sizes = [
-                '42',
+            sizesOutline = [
                 '24',
                 '32',
-                '48',
+                '48'
+            ]
+
+            sizesBitmap = [
+                '42',
+                #'24',
+                #'32',
+                #'48',
+                '11',
                 '33',
                 '38',
+                '44',
                 '46',
                 '50',
                 '58',
                 '67',
                 '75',
+                '77',
                 '83',
                 '92',
                 '100',
+                '111',
                 '117',
                 '133',
+                '144',
                 '150',
                 '167',
                 '200',
                 '233',
-                '11',
-                '44',
-                '77',
-                '111',
-                '144'
             ]
-            sizesCmb = self.getCmbFromList(sizes)
-            sizesPoly = self.getPolymerFromList(sizes)
+
+            sizesCmb = '<optgroup label="Bitmap Sizes">'
+            sizesCmb += self.getCmbFromList(sizesBitmap)
+            sizesCmb += '</optgroup>'
+
+            sizesCmb += '<optgroup label="Outline Sizes">'
+            sizesCmb += self.getCmbFromList(sizesOutline)
+            sizesCmb += '</optgroup>'
+
+            sizesPoly = self.getPolymerFromList(sizesOutline + sizesBitmap)
 
             fontsOutline = [
                 'lettergothic',
