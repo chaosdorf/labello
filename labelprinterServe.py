@@ -26,7 +26,8 @@ class MyHandler(BaseHTTPRequestHandler):
         from brotherprint import BrotherPrint
 
         f_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        f_socket.connect((conf.printerIp, conf.printerPort))
+        f_socket.settimeout(conf.PRINTER_TIMEOUT)
+        f_socket.connect((conf.PRINTER_HOST, conf.PRINTER_PORT))
         printjob = BrotherPrint(f_socket)
 
         printjob.command_mode()
@@ -41,141 +42,35 @@ class MyHandler(BaseHTTPRequestHandler):
         printjob.send(txt.decode('utf8').encode('iso-8859-1'))
         printjob.print_page('full')
 
-    def getCmbFromList(self, ls):
-        cmb = ''
-        for itm in ls:
-            cmb += '<option value="' + str(itm) + '">' + str(itm) + '</option>'
-        return cmb
-
-    def getPolymerFromList(self, ls):
-        poly = '';
-        for itm in ls:
-            poly += '<paper-item>' + str(itm) + '</paper-item>'
-        return poly
-
     def do_GET(self):
         try:
-            sizesOutline = [
-                '24',
-                '32',
-                '48'
-            ]
-
-            sizesBitmap = [
-                '42',
-                #'24',
-                #'32',
-                #'48',
-                '11',
-                '33',
-                '38',
-                '44',
-                '46',
-                '50',
-                '58',
-                '67',
-                '75',
-                '77',
-                '83',
-                '92',
-                '100',
-                '111',
-                '117',
-                '133',
-                '144',
-                '150',
-                '167',
-                '200',
-                '233',
-            ]
-
-            sizesCmb = '<optgroup label="Bitmap Sizes">'
-            sizesCmb += self.getCmbFromList(sizesBitmap)
-            sizesCmb += '</optgroup>'
-
-            sizesCmb += '<optgroup label="Outline Sizes">'
-            sizesCmb += self.getCmbFromList(sizesOutline)
-            sizesCmb += '</optgroup>'
-
-            sizesPoly = self.getPolymerFromList(sizesOutline + sizesBitmap)
-
-            fontsOutline = [
-                'lettergothic',
-                'brusselsoutline',
-                'helsinkioutline'
-            ]
-
-            fontsBitMap = [
-                'brougham',
-                'lettergothicbold',
-                'brusselsbit',
-                'helsinkibit',
-                'sandiego'
-            ]
-
-            fontsCmb = '<optgroup label="Outline Fonts">'
-            fontsCmb += self.getCmbFromList(fontsOutline)
-            fontsCmb += '</optgroup>'
-
-            fontsCmb += '<optgroup label="Bitmap Fonts">'
-            fontsCmb += self.getCmbFromList(fontsBitMap)
-            fontsCmb += '</optgroup>'
-
-            fontsPoly = '<polymer-item disabled>Outline Fonts</polymer-item>'
-            fontsPoly += self.getPolymerFromList(fontsOutline)
-
-            fontsPoly += '<polymer-item disabled>Bitmap Fonts</polymer-item>'
-            fontsPoly += self.getPolymerFromList(fontsBitMap)
-
-            aligns = [
-                'left',
-                'center',
-                'right',
-                'justified'
-            ]
-            alignsCmb = self.getCmbFromList(aligns)
-            alignsPoly = self.getPolymerFromList(aligns)
-
-            charStyles = [
-                'normal',
-                'outline',
-                'shadow',
-                'outlineshadow'
-            ]
-            charStylesCmb = self.getCmbFromList(charStyles)
-            charStylePoly = self.getPolymerFromList(charStyles)
-
-            cuts = [
-                'full',
-                'half',
-                'chain',
-                'special'
-            ]
-            cutsCmb = self.getCmbFromList(cuts)
-            cutsPoly = self.getPolymerFromList(cuts)
-
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
 
             template = ''
-            if self.path == '/':
+
+            finalPath = self.path
+            templateReplaceDict = {}
+            print 'self.path', self.path
+            if finalPath == '/':
+                finalPath = conf.SERVER_DEFAULT_TEMPLATE
+
+            if finalPath == '/base':
+                import templates.base
+                templateReplaceDict = templates.base.getParseDict()
                 template = open('templates/base.html').read()
-            elif self.path == '/magic':
+            elif finalPath == '/magic':
+                import templates.magic
+                templateReplaceDict = templates.magic.getParseDict()
                 template = open('templates/magic.html').read()
+            elif finalPath == '/choose':
+                template = open('templates/choose.html').read()
             else:
                 template = 'NOTHING'
 
-            template = template.replace('{{sizesCmb}}', sizesCmb)
-            template = template.replace('{{sizesPoly}}', sizesPoly)
-            template = template.replace('{{fontsCmb}}', fontsCmb)
-            template = template.replace('{{fontsPoly}}', fontsPoly)
-            template = template.replace('{{alignsCmb}}', alignsCmb)
-            template = template.replace('{{alignsPoly}}', alignsPoly)
-            template = template.replace('{{charStylesCmb}}', charStylesCmb)
-            template = template.replace('{{charStylePoly}}', charStylePoly)
-            template = template.replace('{{cutsCmb}}', cutsCmb)
-            template = template.replace('{{cutsPoly}}', cutsPoly)
+            for replaceKey, replaceValue in templateReplaceDict.iteritems():
+                template = template.replace('{{' + replaceKey + '}}', replaceValue)
 
             self.wfile.write(template)
 
@@ -202,7 +97,6 @@ class MyHandler(BaseHTTPRequestHandler):
             text = query.get('text')
 
             finalTxt = ''
-            print text
             for txt in text:
                 finalTxt += txt
 
@@ -228,7 +122,7 @@ class MyHandler(BaseHTTPRequestHandler):
 def main():
     server = None
     try:
-        server = HTTPServer(('', conf.serverPort), MyHandler)
+        server = HTTPServer(('', conf.SERVER_PORT), MyHandler)
         print 'started httpserver...'
         server.serve_forever()
     except KeyboardInterrupt:
