@@ -1,6 +1,8 @@
 # HTTP-Server
-serverPort = 8000
+SERVER_PORT = 8000
+SERVER_DEFAULT_TEMPLATE = '/choose'
 
 # PRINTER
-printerIp = '172.22.27.26'
-printerPort = 9100
+PRINTER_TIMEOUT = 10  # in seconds
+PRINTER_HOST = '172.22.27.26'
+PRINTER_PORT = 9100
