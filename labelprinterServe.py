@@ -1,12 +1,15 @@
 #!/usr/bin/env python2
 # coding: utf-8
 # https://fragments.turtlemeat.com/pythonwebserver.php
-import string
+
 import cgi
-import time
-from os import curdir, sep
+import os
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
-import labelprinterServeConf as conf
+
+if os.path.isfile('labelprinterServeConf_local.py'):
+    import labelprinterServeConf_local as conf
+else:
+    import labelprinterServeConf as conf
 
 
 class MyHandler(BaseHTTPRequestHandler):
