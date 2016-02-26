@@ -1,10 +1,4 @@
 sizesOutline = [
-    '24',
-    '32',
-    '48'
-]
-
-sizesBitmap = [
     '42',
     #'24',
     #'32',
@@ -30,6 +24,13 @@ sizesBitmap = [
     '167',
     '200',
     '233',
+
+]
+
+sizesBitmap = [
+    '24',
+    '32',
+    '48'
 ]
 
 fontsOutline = [

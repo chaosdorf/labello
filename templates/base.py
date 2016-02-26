@@ -4,14 +4,13 @@ from libs import parser, printerFeatures
 def getParseDict():
     parseDict = {}
 
-    parseDict['sizesCmb'] = '<optgroup label="Bitmap Sizes">'
-    parseDict['sizesCmb'] += parser.getCmbFromList(printerFeatures.sizesBitmap)
-    parseDict['sizesCmb'] += '</optgroup>'
-
     parseDict['sizesCmb'] += '<optgroup label="Outline Sizes">'
     parseDict['sizesCmb'] += parser.getCmbFromList(printerFeatures.sizesOutline)
     parseDict['sizesCmb'] += '</optgroup>'
 
+    parseDict['sizesCmb'] = '<optgroup label="Bitmap Sizes">'
+    parseDict['sizesCmb'] += parser.getCmbFromList(printerFeatures.sizesBitmap)
+    parseDict['sizesCmb'] += '</optgroup>'
 
     parseDict['fontsCmb'] = '<optgroup label="Outline Fonts">'
     parseDict['fontsCmb'] += parser.getCmbFromList(printerFeatures.fontsOutline)
