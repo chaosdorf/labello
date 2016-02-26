@@ -7,7 +7,8 @@ def getParseDict():
     parseDict['sizesCmb'] = parser.getCmbFromList(printerFeatures.sizesBitmap)
     parseDict['sizesCmb'] += parser.getCmbFromList(printerFeatures.sizesOutline)
 
-    parseDict['sizesPoly'] = parser.getPolymerFromList(printerFeatures.sizesBitmap)
+    parseDict['sizesBitmapPoly'] = parser.getPolymerFromList(printerFeatures.sizesBitmap)
+    parseDict['sizesOutlinePoly'] = parser.getPolymerFromList(printerFeatures.sizesOutline)
 
     parseDict['fontsCmb'] = '<optgroup label="Outline Fonts">'
     parseDict['fontsCmb'] += parser.getCmbFromList(printerFeatures.fontsOutline)

@@ -66,8 +66,11 @@ paper-toggle-button {
 <form style="display: none; visibility: hidden; justify-content: center; flex-direction: column; width: 30%" action="/" is="iron-form" id="form" method="post">
   <paper-textarea rows="3" autofocus name="text" label="Label" required></paper-textarea>
   <paper-dropdown-menu required name="fontSize" horizontal-align="middle" label="Font Size">
-    <paper-listbox selected="0" class="dropdown-content">
-      {{sizesPoly}}
+    <paper-listbox selected="1" class="dropdown-content">
+      <polymer-item disabled>Outline Font Sizes</polymer-item>
+      {{sizesOutlinePoly}}
+      <polymer-item disabled>Bitmap Font Sizes</polymer-item>
+      {{sizesBitmapPoly}}
     </paper-listbox>
   </paper-dropdown-menu>
   <paper-dropdown-menu required name="font" horizontal-align="middle" label="Font">
