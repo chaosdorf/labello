@@ -43,7 +43,7 @@ class MyHandler(BaseHTTPRequestHandler):
         printjob.cut_setting(cut)
 
         printjob.send(txt.decode('utf8').encode('iso-8859-1'))
-        printjob.print_page('full')
+        printjob.print_page(cut)
 
     def do_GET(self):
         try:
