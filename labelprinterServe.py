@@ -103,6 +103,9 @@ class MyHandler(BaseHTTPRequestHandler):
             for txt in text:
                 finalTxt += txt
 
+            if finalTxt.strip() == '':
+                raise RuntimeError('NO TEXT, NO LABEL!')
+
             self.wfile.write("POST OK.\n")
             self.wfile.write("start printing: " + finalTxt + "\n")
 
