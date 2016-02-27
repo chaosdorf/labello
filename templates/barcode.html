@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8"/>
+        <title>Barcodes | laibelprinter labello</title>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+        <style type="text/css">
+            .container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .container100 {
+                flex-direction: column;
+                height: 100%;
+            }
+            .form-group {
+                display: flex;
+            }
+            .label100 {
+                flex: 1;
+            }
+            body {
+                font-family: monospace;
+            }
+            .btn {
+                width: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <form method="POST" target="_blank" enctype="multipart/form-data" class="form-group container container100">
+            <textarea name="text" cols="28" rows="15"></textarea>
+            <div>
+                <input type="hidden" name="printMode" value="barcode">
+                <div class="form-group">
+                    <label class="label100" for="barcodeType">Barcode Type:</label>
+                    <select name="barcodeType" id="barcodeType">{{barcodesCmb}}</select>
+                </div>
+                <div class="form-group">
+                    <label class="label100" for="barcodeWidth">Width:</label>
+                    <select name="barcodeWidth" id="barcodeWidth">{{barcodeWidthCmb}}</select>
+                </div>
+                <div class="form-group">
+                    <label class="label100" for="barcodeHeight">Height:</label>
+                    <input type="number" class="form-control" name="barcodeHeight" id="barcodeHeight" value="100">
+                </div>
+                <div class="form-group">
+                    <label class="label100" for="barcodeRatio">Ratio:</label>
+                    <select name="barcodeRatio" id="barcodeRatio">{{barcodeRatioCmb}}</select>
+                </div>
+                <div class="form-group">
+                    <label class="label100" for="barcodeEqualize">Equalize:</label>
+                    <input type="checkbox" name="barcodeEqualize" id="barcodeEqualize" value="on">
+                </div>
+                <div class="form-group">
+                    <label class="label100" for="barcodeCharacters">Hide Characters:</label>
+                    <input type="checkbox" name="barcodeCharacters" id="barcodeCharacters" value="off">
+                </div>
+                <div class="form-group">
+                    <label class="label100" for="barcodeParentheses">Hide Parentheses:</label>
+                    <input type="checkbox" name="barcodeParentheses" id="barcodeParentheses" value="off">
+                </div>
+            </div>
+            <div class="form-group container">
+                <input type="submit" value="PRINT" class="btn btn-primary ">
+            </div>
+        </form>
+    </body>
+</html>

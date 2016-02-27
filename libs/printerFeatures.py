@@ -63,3 +63,22 @@ cuts = [
     'chain',
     'special'
 ]
+
+barcodes = [
+    'code39',
+    'code128',
+    'gs1-128'
+]
+
+barcodeWidth = [
+    'medium',
+    'xsmall',
+    'small',
+    'large'
+]
+
+barcodeRatio = [
+    '3:1',
+    '2.5:1',
+    '2:1'
+]
