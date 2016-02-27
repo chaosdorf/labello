@@ -21,16 +21,20 @@ def testLabel(printjob):
     printjob.send(txt)
     printjob.print_page('full')
 
+def testRaster(printjob):
+    printjob.invalidate()
+    printjob.initialize()
+    printjob.raster_mode()
+    #printjob.print_line()
+    #printjob.print_line()
+    #printjob.print_line()
+
 def testBarcode(printjob):
     barcodes = ['code39', 'itf', 'ean8/upca', 'upce', 'codabar', 'code128', 'gs1-128', 'rss']
 
     # nope: 'code39', itf, ean8/upca, upce, codabar,  gs1-128
     #'itf',
-    barcodes = ['code39', 'code128', 'gs1-128']
-    index = 0
-    for code in barcodes:
-        printjob.barcode(str(index), code, 'on', height=100, width='medium')
-        index += 1
+    printjob.qr_code("test123", cell_size=10)
     #printjob.barcode(str(123), 'rss', rss_symbol='rsslimited')
 
 f_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -39,8 +43,10 @@ printjob = BrotherPrint(f_socket)
 
 printjob.command_mode()
 printjob.initialize()
-
+#testRaster(printjob)
 testBarcode(printjob)
+
+#testLabel(printjob)
 
 
 printjob.print_page('full')

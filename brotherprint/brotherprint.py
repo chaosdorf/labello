@@ -34,9 +34,9 @@ class BrotherPrint:
             None
         '''
         self.send(chr(27)+'ia'+chr(1))
-    
+
     def template_mode(self):
-        '''Sets printer to template mode
+        '''Setsprinter to template mode
         
         Args:
             None
@@ -934,6 +934,26 @@ class BrotherPrint:
             None
         '''
         self.send(chr(94)+chr(73)+chr(73))
+
+    def invalidate(self):
+        '''
+        Yolo
+        :return:
+        '''
+        self.send(chr(0x00)*200)
+
+    def print_line(self):
+        '''Prints a nice line
+        Args:
+            None
+        Returns:
+            None
+        Raises:
+            None
+        '''
+        output = chr(0x67)+chr(0x00)+chr(0x5a)+chr(0x00)+chr(0x0f)+chr(0xff)
+        output += ((chr(0xf0) + chr(0x00)) * 43 * 4)
+        self.send(output)
         
     def print_start_trigger(self, type):
         '''Set print start trigger.
@@ -1046,5 +1066,13 @@ class BrotherPrint:
         '''
         self.select_obj(name)
         self.insert_into_obj(data)
-    
-    
+
+    def qr_code(self, data, cell_size=4):
+        symbol_type = 2
+        partitioned = 0
+        partition = 0
+        parity = 0
+        error_correction = 4
+        data_input = 0
+        header = chr(0x1b) + 'iq'+ chr(cell_size) + chr(symbol_type) + chr(partitioned) + chr(partition) + chr(parity)  + chr(error_correction) + chr(data_input) + 'a'
+        self.send(header+data+'\\\\\\')
