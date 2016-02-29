@@ -16,10 +16,10 @@ def testLabel(printjob):
     #printjob.select_charset("Germany")
     #printjob.select_char_code_table("western european")
     #txt = 28*"x"
-    txt = "öäü".decode('utf8').encode('iso-8859-1')
+    txt = "auf deinem grab".decode('utf8').encode('iso-8859-1')
 
     printjob.send(txt)
-    printjob.print_page('full')
+    #printjob.print_page('full')
 
 def testRaster(printjob):
     printjob.invalidate()
@@ -34,7 +34,7 @@ def testBarcode(printjob):
 
     # nope: 'code39', itf, ean8/upca, upce, codabar,  gs1-128
     #'itf',
-    printjob.qr_code("test123", cell_size=10)
+    #printjob.qr_code("test123", cell_size=10)
     #printjob.barcode(str(123), 'rss', rss_symbol='rsslimited')
 
 f_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -44,9 +44,9 @@ printjob = BrotherPrint(f_socket)
 printjob.command_mode()
 printjob.initialize()
 #testRaster(printjob)
-testBarcode(printjob)
+#testBarcode(printjob)
 
-#testLabel(printjob)
+testLabel(printjob)
 
 
 printjob.print_page('full')
