@@ -4,6 +4,8 @@
 
 import cgi
 import os
+import socket
+from brotherprint import BrotherPrint
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 
 if os.path.isfile('labelprinterServeConf_local.py'):
@@ -25,8 +27,7 @@ class MyHandler(BaseHTTPRequestHandler):
             cut='full'
     ):
         print "start printing:", txt
-        import socket
-        from brotherprint import BrotherPrint
+
 
         f_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         f_socket.settimeout(conf.PRINTER_TIMEOUT)
@@ -43,6 +44,26 @@ class MyHandler(BaseHTTPRequestHandler):
         printjob.cut_setting(cut)
 
         printjob.send(txt.decode('utf8').encode('iso-8859-1'))
+        printjob.print_page(cut)
+
+    def printBarcode(self, txt, barcode, characters='on', height=100, width='medium', parentheses='on', ratio='3:1', equalize='off'):
+        '''
+        characters='on', characters: Whether you want characters below the bar code. 'off' or 'on'
+        height=100, height: Height, in dots.
+        width='medium' width: width of barcode. Choose 'xsmall' 'small' 'medium' 'large'
+        parentheses='on', parentheses: Parentheses deletion on or off. 'on' or 'off' Only matters with GS1-128
+        ratio='3:1', ratio: ratio between thick and thin bars. Choose '3:1', '2.5:1', and '2:1'
+        equalize='off' equalize: equalize bar lengths, choose 'off' or 'on'
+        '''
+        f_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        f_socket.settimeout(conf.PRINTER_TIMEOUT)
+        f_socket.connect((conf.PRINTER_HOST, conf.PRINTER_PORT))
+        printjob = BrotherPrint(f_socket)
+
+        printjob.command_mode()
+        printjob.initialize()
+
+        printjob.barcode(txt, barcode, characters, height, width, parentheses, ratio, equalize)
         printjob.print_page('full')
 
     def do_GET(self):
@@ -63,6 +84,10 @@ class MyHandler(BaseHTTPRequestHandler):
                 import templates.base
                 templateReplaceDict = templates.base.getParseDict()
                 template = open('templates/base.html').read()
+            elif finalPath == '/barcode':
+                import templates.barcode
+                templateReplaceDict = templates.barcode.getParseDict()
+                template = open('templates/barcode.html').read()
             elif finalPath == '/magic':
                 import templates.magic
                 templateReplaceDict = templates.magic.getParseDict()
@@ -111,15 +136,27 @@ class MyHandler(BaseHTTPRequestHandler):
 
             print finalTxt
 
-            self.printText(
-                finalTxt,
-                charSize=query.get('fontSize', [42])[0],
-                font=query.get('font', ['lettergothic'])[0],
-                align=query.get('align', ['left'])[0],
-                bold=query.get('bold', ['off'])[0],
-                charStyle=query.get('charStyle', ['normal'])[0],
-                cut=query.get('cut', ['full'])[0],
-            )
+            if query.get('printMode', [''])[0] == 'barcode':
+                self.printBarcode(
+                    finalTxt,
+                    barcode=query.get('barcodeType', ['code39'])[0],
+                    characters=query.get('barcodeCharacters', ['on'])[0],
+                    height=int(query.get('barcodeHeight', [100])[0]),
+                    width=query.get('barcodeWidth', ['medium'])[0],
+                    parentheses=query.get('barcodeParentheses', ['on'])[0],
+                    ratio=query.get('barcodeRatio', ['3:1'])[0],
+                    equalize=query.get('barcodeEqualize', ['off'])[0]
+                )
+            else:
+                self.printText(
+                    finalTxt,
+                    charSize=query.get('fontSize', [42])[0],
+                    font=query.get('font', ['lettergothic'])[0],
+                    align=query.get('align', ['left'])[0],
+                    bold=query.get('bold', ['off'])[0],
+                    charStyle=query.get('charStyle', ['normal'])[0],
+                    cut=query.get('cut', ['full'])[0],
+                )
         except Exception as ex:
             print 'ERROR:', ex
             self.wfile.write("ERROR: " + str(ex))
