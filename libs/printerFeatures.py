@@ -71,9 +71,9 @@ barcodes = [
 ]
 
 barcodeWidth = [
-    'medium',
     'xsmall',
     'small',
+    'medium',
     'large'
 ]
 
