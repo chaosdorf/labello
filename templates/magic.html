@@ -5,108 +5,42 @@
   <meta name="viewport" content="initial-scale=1, width=device-width">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>laibelprinter</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.7.21/webcomponents.min.js"></script>
-  <link rel="import" href="https://cdn.rawgit.com/Download/polymer-cdn/master/lib/paper-dropdown-menu/paper-dropdown-menu.html">
-  <link rel="import"
-  href="https://cdn.rawgit.com/Download/polymer-cdn/master/lib/paper-menu/paper-menu.html">
-  <link rel="import" href="https://cdn.rawgit.com/Download/polymer-cdn/master/lib/paper-input/paper-textarea.html">
-  <link rel="import" href="https://cdn.rawgit.com/Download/polymer-cdn/master/lib/iron-form/iron-form.html">
-  <link rel="import" href="https://cdn.rawgit.com/Download/polymer-cdn/master/lib/paper-button/paper-button.html">
-  <link rel="import" href="https://cdn.rawgit.com/Download/polymer-cdn/master/lib/paper-item/paper-item.html">
-  <link rel="import" href="https://cdn.rawgit.com/Download/polymer-cdn/master/lib/paper-listbox/paper-listbox.html">
-  <link rel="import" href="https://cdn.rawgit.com/Download/polymer-cdn/master/lib/paper-toggle-button/paper-toggle-button.html">
+  <script>
+  window.sizesBitmap = {{sizesBitmap}}.map(x => Number.parseInt(x))
+  .sort((a, b) => a - b)
+  .map(x => x.toString())
+  .map(x => ({
+    label: x,
+    value: x,
+  }));
+  window.sizesOutline = {{sizesOutline}}.map(x => Number.parseInt(x))
+  .sort((a, b) => a - b)
+  .map(x => x.toString())
+  .map(x => ({
+    label: x,
+    value: x,
+  }));
+  window.fontsOutline = {{fontsOutline}}.map(x => ({
+    label: x,
+    value: x,
+  }));
+  window.fontsBitMap = {{fontsBitMap}}.map(x => ({
+    label: x,
+    value: x,
+  }));
+  window.aligns = {{aligns}}.map(x => ({
+    label: x,
+    value: x,
+  }));
+  window.charStyles = {{charStyles}}.map(x => ({
+    label: x,
+    value: x,
+  }));
+  window.cuts = {{cuts}}
+  </script>
+  <script src="app.js"></script>
 </head>
 <body style="display: flex; justify-content: center">
-  <noscript>
-    <form method="POST" target="_blank" enctype="multipart/form-data" class="form-group container container100">
-      <textarea name="text" cols="28" rows="15"></textarea>
-      <div>
-        <div class="form-group">
-          <label class="label100" for="fontSize">Font Size:</label>
-          <select name="fontSize" id="fontSize">{{sizesCmb}}</select>
-        </div>
-        <div class="form-group">
-          <label class="label100" for="font">Font:</label>
-          <select name="font" id="font">{{fontsCmb}}</select>
-        </div>
-        <div class="form-group">
-          <label class="label100" for="align">Align:</label>
-          <select name="align" id="align">{{alignsCmb}}</select>
-        </div>
-        <div class="form-group">
-          <label class="label100" for="bold">Bold:</label>
-          <input type="checkbox" name="bold" id="bold" value="on">
-        </div>
-        <div class="form-group">
-          <label class="label100" for="charStyle">Char Style:</label>
-          <select name="charStyle" id="charStyle">{{charStylesCmb}}</select>
-        </div>
-        <!--div class="form-group">
-        <label class="label100" for="cut">Cutter:</label>
-        <select name="cut" id="cut">{{cutsCmb}}</select>
-      </div-->
-    </div>
-
-    <div class="form-group container">
-      <input type="submit" value="PRINT" class="btn btn-primary ">
-    </div>
-  </form>
-</noscript>
-<style>
-paper-toggle-button {
-  display: flex;
-  -webkit-user-select: none;
-}
-.toggle-label.paper-toggle-button {
-  flex: 1;
-  justify-content: flex-end;
-  display: flex;
-}
-</style>
-<form style="display: none; visibility: hidden; justify-content: center; flex-direction: column; width: 30%" action="/" is="iron-form" id="form" method="post">
-  <paper-textarea rows="3" autofocus name="text" label="Label" required></paper-textarea>
-  <paper-dropdown-menu required name="fontSize" horizontal-align="middle" label="Font Size">
-    <paper-listbox selected="1" class="dropdown-content">
-      <polymer-item disabled>Outline Font Sizes</polymer-item>
-      {{sizesOutlinePoly}}
-      <polymer-item disabled>Bitmap Font Sizes</polymer-item>
-      {{sizesBitmapPoly}}
-    </paper-listbox>
-  </paper-dropdown-menu>
-  <paper-dropdown-menu required name="font" horizontal-align="middle" label="Font">
-    <paper-listbox selected="1" class="dropdown-content">
-      {{fontsPoly}}
-    </paper-listbox>
-  </paper-dropdown-menu>
-  <paper-dropdown-menu required name="align" horizontal-align="middle" label="Align">
-    <paper-listbox selected="0" class="dropdown-content">
-      {{alignsPoly}}
-    </paper-listbox>
-  </paper-dropdown-menu>
-  <paper-dropdown-menu required name="charStyle" horizontal-align="middle" label="Char Style">
-    <paper-listbox selected="0" class="dropdown-content">
-      {{charStylePoly}}
-    </paper-listbox>
-  </paper-dropdown-menu>
-  <br>
-  <paper-toggle-button name="bold">Bold</paper-toggle-button>
-  <br>
-  <paper-button onclick="submitForm()" raised>Print</paper-button>
-</form>
-<script>
-function submitForm() {
-  document.getElementById('form').submit();
-}
-
-document.getElementById('form').style.display = 'flex';
-document.getElementById('form').style.visibility = 'visible';
-
-document.onkeydown = function(e) {
-  if (e.code === "Enter" && (e.ctrlKey || e.metaKey)) {
-    e.preventDefault();
-    submitForm();
-  }
-}
-</script>
+  <div id="laibel"></div>
 </body>
 </html>

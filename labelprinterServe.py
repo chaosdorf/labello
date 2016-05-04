@@ -94,8 +94,12 @@ class MyHandler(BaseHTTPRequestHandler):
                 template = open('templates/magic.html').read()
             elif finalPath == '/choose':
                 template = open('templates/choose.html').read()
+            elif finalPath == '/app.js':
+                import templates.magic
+                templateReplaceDict = templates.magic.getParseDict()
+                template = open('www/app.js').read()
             else:
-                template = 'NOTHING'
+                template = open('www' + finalPath).read()
 
             for replaceKey, replaceValue in templateReplaceDict.iteritems():
                 template = template.replace('{{' + replaceKey + '}}', replaceValue)

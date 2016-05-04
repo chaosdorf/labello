@@ -1,0 +1,9 @@
+@font-face {
+  font-family: lettergothic;
+  src: url(./letterGothicStd.ttf) format('truetype');
+}
+@font-face {
+  font-family: lettergothic;
+  font-weight: bold;
+  src: url(./letterGothicStdBold.ttf) format('truetype');
+}

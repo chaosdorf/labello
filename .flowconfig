@@ -1,0 +1,26 @@
+[ignore]
+.*node_modules/.*
+
+[include]
+
+[libs]
+node_modules/iflow-material-ui/index.js.flow
+interfaces/
+
+[options]
+module.name_mapper='.*\.css$' -> 'ModuleStub'
+module.name_mapper='.*\.less$' -> 'ModuleStub'
+module.name_mapper='.*\.json$' -> 'ModuleStub'
+module.system=haste
+module.system.node.resolve_dirname=node_modules
+esproposal.decorators=ignore
+esproposal.class_static_fields=enable
+esproposal.class_instance_fields=enable
+unsafe.enable_getters_and_setters=true
+experimental.const_params=true
+esproposal.export_star_as=enable
+module.ignore_non_literal_requires=true
+
+suppress_comment=\\(.\\|\n\\)*\\$FlowFixMe\\($\\|[^(]\\|(\\(>=0\\.\\(2[0-0]\\|1[0-9]\\|[0-9]\\).[0-9]\\)? *\\(site=[a-z,_]*react_native[a-z,_]*\\)?)\\)
+suppress_comment=\\(.\\|\n\\)*\\$FlowIssue\\((\\(>=0\\.\\(2[0-0]\\|1[0-9]\\|[0-9]\\).[0-9]\\)? *\\(site=[a-z,_]*react_native[a-z,_]*\\)?)\\)?:? #[0-9]+
+suppress_comment=\\(.\\|\n\\)*\\$FlowFixedInNextDeploy

@@ -1,0 +1,19 @@
+type SelectOption = {
+  value: string,
+  label: string,
+}
+
+declare var sizesBitmap: SelectOption[];
+declare var sizesOutline: SelectOption[];
+declare var fontsOutline: SelectOption[];
+declare var fontsBitMap: SelectOption[];
+declare var aligns: SelectOption[];
+declare var charStyles: SelectOption[];
+declare var cuts: string[];
+
+declare module 'ModuleStub' {
+  declare var exports: any;
+}
+declare module 'react-tap-event-plugin' {
+  declare var exports: Function;
+}

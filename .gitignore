@@ -67,3 +67,6 @@ target/
 # other
 .vagrant
 *~
+node_modules
+www
+.DS_Store
