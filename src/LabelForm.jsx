@@ -48,8 +48,8 @@ export default class LabelForm extends React.Component {
       fontWeight: bold ? 'bold' : 'normal',
     });
     return (
-      <Form method="POST" target="_blank" action="/" enctype="multipart/form-data">
-        <FormInput style={labelStyle} multiline placeholder="Label Text"/>
+      <Form method="POST" action="/">
+        <FormInput name="text" style={labelStyle} multiline placeholder="Label Text"/>
         <br/>
         <div>
           <Checkbox label="Outline Font" checked={outline} onChange={this.handleBoolChange.bind(this, 'outline')}/>
