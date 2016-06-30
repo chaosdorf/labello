@@ -16,6 +16,7 @@ const style = {
   label: {
     padding: 10,
     width: 450,
+    maxWidth: '100%',
     wordBreak: 'break-all',
   },
 };
@@ -26,7 +27,7 @@ export default class LabelForm extends React.Component {
     outline: true,
     bold: false,
     selectedFont: 'lettergothic',
-    selectedSize: '33',
+    selectedSize: '42',
   };
   handleChange(type: string, value: string) {
     this.setState({
