@@ -38,7 +38,7 @@ def testBarcode(printjob):
     #printjob.barcode(str(123), 'rss', rss_symbol='rsslimited')
 
 f_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-f_socket.connect(('172.22.27.26', 9100))
+f_socket.connect(('172.22.26.67', 9100))
 printjob = BrotherPrint(f_socket)
 
 printjob.command_mode()
