@@ -16,7 +16,7 @@ def testLabel(printjob):
     #printjob.select_charset("Germany")
     #printjob.select_char_code_table("western european")
     #txt = 28*"x"
-    txt = "auf deinem grab".decode('utf8').encode('iso-8859-1')
+    txt = "auf deinem Grab".decode('utf8').encode('iso-8859-1')
 
     printjob.send(txt)
     #printjob.print_page('full')
