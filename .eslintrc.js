@@ -2,7 +2,7 @@ module.exports = {
   extends: 'marudor',
   env: {
     browser: true,
-    node: true
+    node: true,
   },
   globals: {
     IS_PRODUCTION: false,
@@ -13,5 +13,8 @@ module.exports = {
     aligns: false,
     charStyles: false,
     cuts: false,
+  },
+  rules: {
+    'no-mixed-operators': 0,
   },
 };

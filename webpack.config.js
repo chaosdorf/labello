@@ -1,13 +1,9 @@
-/* eslint camelcase: 0 */
+/* eslint camelcase: 0 header/header: 0 */
 const path = require('path');
 const process = require('process');
 const webpack = require('webpack');
-const fs = require('fs');
 
-let node_env = process.env.NODE_ENV || 'development';
-if (!fs.existsSync(`./src/config.${node_env}.js`)) {
-  node_env = 'development';
-}
+const node_env = process.env.NODE_ENV || 'development';
 const plugins = [
   new webpack.NoErrorsPlugin(),
   new webpack.DefinePlugin({
@@ -19,44 +15,48 @@ const plugins = [
 ];
 
 if (node_env === 'production') {
-  plugins.push(
-    new webpack.optimize.UglifyJsPlugin()
-  );
+  plugins.push(new webpack.optimize.UglifyJsPlugin());
 }
 
 module.exports = {
-  devtool: node_env === 'production' ? undefined : 'inline-cheap-module-source-map',
-  eslint: {
-    configFile: './.eslintrc.js',
-    failOnWarning: false,
-    failOnError: true,
-  },
   context: __dirname,
   resolve: {
-    extensions: ['', '.js', '.jsx', '.json'],
-    root: path.resolve('src'),
+    extensions: ['.js', '.jsx'],
+    modules: [path.resolve('src'), 'node_modules'],
   },
-  entry: [
-    './src/entry.js',
-  ],
+  entry: ['entry.js'],
   output: {
     path: path.resolve('www'),
     filename: 'app.js',
     publicPath: '',
   },
   module: {
-    loaders: [
-      { test: /\.less$/, loader: 'style!css!less' },
-      { test: /\.css$/, loader: 'style!css' },
-      { test: /\.CSS.js$/, exclude: /(node_modules|dependency)/, loader: 'inline-css!babel!eslint' },
-      { test: /^((?!CSS\.js$).)*(\.jsx?)$/,
-        exclude: /(node_modules|external)/,
-        loader: 'babel!eslint',
+    rules: [
+      { test: /\.less$/, loader: 'style-loader!css-loader!less-loader' },
+      { test: /\.css$/, loader: 'style-loader!css-loader' },
+      {
+        test: /\.jsx?$/,
+        exclude: /(node_modules|primusClient)/,
+        loader: 'babel-loader',
+        include: [path.resolve(__dirname, 'src')],
+        query: { cacheDirectory: true },
       },
-      { test: /\.(jpg|png|gif)$/, loader: 'file!image' },
-      { test: /\.woff2?(\?v=.*)?$/, loader: 'file' },
-      { test: /\.(eot|ttf|svg|otf)(\?v=.*)?$/, loader: 'file' },
+      { test: /\.(jpg|png|gif)$/, loader: 'file-loader!image-loader' },
+      { test: /\.woff2?(\?v=.*)?$/, loader: 'file-loader' },
+      { test: /\.(eot|ttf|svg|otf)(\?v=.*)?$/, loader: 'file-loader' },
     ],
   },
   plugins,
 };
+
+if (process.env.NODE_ENV !== 'production') {
+  //Art der Sourcemap
+  module.exports.devtool = 'source-map';
+  module.exports.module.rules.push({
+    enforce: 'pre',
+    test: /.jsx?$/,
+    loader: 'eslint-loader',
+    include: [path.resolve(__dirname, 'src')],
+    exclude: /(.*\.config.*|.*node_modules.*|.*inferno.*)/,
+  });
+}

@@ -4,13 +4,13 @@
 [include]
 
 [libs]
-node_modules/iflow-material-ui/index.js.flow
 interfaces/
 
 [options]
 module.name_mapper='.*\.css$' -> 'ModuleStub'
 module.name_mapper='.*\.less$' -> 'ModuleStub'
 module.name_mapper='.*\.json$' -> 'ModuleStub'
+module.name_mapper='elemental$' -> 'ModuleStub'
 module.system=haste
 module.system.node.resolve_dirname=node_modules
 esproposal.decorators=ignore
