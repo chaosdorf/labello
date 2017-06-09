@@ -8,6 +8,8 @@ import socket
 from brotherprint import BrotherPrint
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 
+from labelprinter import Labelprinter
+
 if os.path.isfile('labelprinterServeConf_local.py'):
     import labelprinterServeConf_local as conf
 else:
@@ -15,56 +17,7 @@ else:
 
 
 class MyHandler(BaseHTTPRequestHandler):
-
-    def printText(
-            self,
-            txt,
-            charSize='42',
-            font='lettergothic',
-            align='left',
-            bold='off',
-            charStyle='normal',
-            cut='full'
-    ):
-        print "start printing:", txt
-
-
-        f_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        f_socket.settimeout(conf.PRINTER_TIMEOUT)
-        f_socket.connect((conf.PRINTER_HOST, conf.PRINTER_PORT))
-        printjob = BrotherPrint(f_socket)
-
-        printjob.command_mode()
-        printjob.initialize()
-        printjob.select_font(font)
-        printjob.char_size(charSize)  # 28 chars
-        printjob.alignment(align)
-        printjob.bold(bold)
-        printjob.char_style(charStyle)
-        printjob.cut_setting(cut)
-
-        printjob.send(txt.decode('utf8').encode('iso-8859-1'))
-        printjob.print_page(cut)
-
-    def printBarcode(self, txt, barcode, characters='on', height=100, width='medium', parentheses='on', ratio='3:1', equalize='off'):
-        '''
-        characters='on', characters: Whether you want characters below the bar code. 'off' or 'on'
-        height=100, height: Height, in dots.
-        width='medium' width: width of barcode. Choose 'xsmall' 'small' 'medium' 'large'
-        parentheses='on', parentheses: Parentheses deletion on or off. 'on' or 'off' Only matters with GS1-128
-        ratio='3:1', ratio: ratio between thick and thin bars. Choose '3:1', '2.5:1', and '2:1'
-        equalize='off' equalize: equalize bar lengths, choose 'off' or 'on'
-        '''
-        f_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        f_socket.settimeout(conf.PRINTER_TIMEOUT)
-        f_socket.connect((conf.PRINTER_HOST, conf.PRINTER_PORT))
-        printjob = BrotherPrint(f_socket)
-
-        printjob.command_mode()
-        printjob.initialize()
-
-        printjob.barcode(txt, barcode, characters, height, width, parentheses, ratio, equalize)
-        printjob.print_page('full')
+    labelprinter = Labelprinter(conf=conf)
 
     def do_GET(self):
         try:
@@ -141,7 +94,7 @@ class MyHandler(BaseHTTPRequestHandler):
             print finalTxt
 
             if query.get('printMode', [''])[0] == 'barcode':
-                self.printBarcode(
+                self.labelprinter.printBarcode(
                     finalTxt,
                     barcode=query.get('barcodeType', ['code39'])[0],
                     characters=query.get('barcodeCharacters', ['on'])[0],
@@ -152,7 +105,7 @@ class MyHandler(BaseHTTPRequestHandler):
                     equalize=query.get('barcodeEqualize', ['off'])[0]
                 )
             else:
-                self.printText(
+                self.labelprinter.printText(
                     finalTxt,
                     charSize=query.get('fontSize', [42])[0],
                     font=query.get('font', ['lettergothic'])[0],
