@@ -17,7 +17,6 @@ else:
 
 
 class MyHandler(BaseHTTPRequestHandler):
-    labelprinter = Labelprinter(conf=conf)
 
     def do_GET(self):
         try:
@@ -92,9 +91,11 @@ class MyHandler(BaseHTTPRequestHandler):
             self.wfile.write("start printing: " + finalTxt + "\n")
 
             print finalTxt
+            
+            labelprinter = Labelprinter(conf=conf)
 
             if query.get('printMode', [''])[0] == 'barcode':
-                self.labelprinter.printBarcode(
+                labelprinter.printBarcode(
                     finalTxt,
                     barcode=query.get('barcodeType', ['code39'])[0],
                     characters=query.get('barcodeCharacters', ['on'])[0],
@@ -105,7 +106,7 @@ class MyHandler(BaseHTTPRequestHandler):
                     equalize=query.get('barcodeEqualize', ['off'])[0]
                 )
             else:
-                self.labelprinter.printText(
+                labelprinter.printText(
                     finalTxt,
                     charSize=query.get('fontSize', [42])[0],
                     font=query.get('font', ['lettergothic'])[0],
