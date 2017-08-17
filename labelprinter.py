@@ -15,6 +15,7 @@ class Labelprinter():
         self.printjob = printjob
         self.printjob.command_mode()
         self.printjob.initialize()
+        self.printjob.select_char_code_table("western european")
     
     def printText(
             self,
@@ -35,7 +36,7 @@ class Labelprinter():
         self.printjob.char_style(charStyle)
         self.printjob.cut_setting(cut)
 
-        self.printjob.send(txt.decode('utf8').encode('iso-8859-1'))
+        self.printjob.send(txt.decode('utf8').encode('windows-1252'))
         self.printjob.print_page(cut)
     
     def printBarcode(self, txt, barcode, characters='on', height=100, width='medium', parentheses='on', ratio='3:1', equalize='off'):
