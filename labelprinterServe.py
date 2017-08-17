@@ -9,11 +9,7 @@ from brotherprint import BrotherPrint
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 
 from labelprinter import Labelprinter
-
-if os.path.isfile('labelprinterServeConf_local.py'):
-    import labelprinterServeConf_local as conf
-else:
-    import labelprinterServeConf as conf
+import labelprinterServeConf as conf
 
 
 class MyHandler(BaseHTTPRequestHandler):
@@ -124,7 +120,7 @@ def main():
     server = None
     try:
         server = HTTPServer(('', conf.SERVER_PORT), MyHandler)
-        print 'started httpserver...'
+        print 'started httpserver on port ' + str(conf.SERVER_PORT) + ' ...'
         server.serve_forever()
     except KeyboardInterrupt:
         print '^C received, shutting down server'
