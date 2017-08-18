@@ -9,6 +9,9 @@ PRINTER_TIMEOUT = 10  # in seconds
 PRINTER_HOST = '172.22.26.67'
 PRINTER_PORT = 9100
 
+# error logging
+SENTRY_DSN = None
+
 # try to overwrite default vars with the local config file
 try:
     from labelprinterServeConf_local import *

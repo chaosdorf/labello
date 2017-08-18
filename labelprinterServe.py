@@ -11,6 +11,11 @@ from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from labelprinter import Labelprinter
 import labelprinterServeConf as conf
 
+if conf.SENTRY_DSN:
+    import raven
+    raven_client = raven.Client(conf.SENTRY_DSN)
+else:
+    raven_client = None
 
 class MyHandler(BaseHTTPRequestHandler):
 
@@ -53,11 +58,15 @@ class MyHandler(BaseHTTPRequestHandler):
                 template = template.replace('{{' + replaceKey + '}}', replaceValue)
 
             self.wfile.write(template)
-
             return
 
-        except Exception as ex:
+        except IOError as ex:
             self.send_error(404, 'File Not Found: {} {}'.format(self.path, ex))
+        except Exception as ex:
+            if raven_client:
+                raven_client.captureException()
+            print "ERROR: ", ex
+            self.send_error(500, 'ERROR: {}'.format(ex))
 
     def do_POST(self):
         self.send_response(301)
@@ -112,6 +121,8 @@ class MyHandler(BaseHTTPRequestHandler):
                     cut=query.get('cut', ['full'])[0],
                 )
         except Exception as ex:
+            if raven_client:
+                raven_client.captureException()
             print 'ERROR:', ex
             self.wfile.write("ERROR: " + str(ex))
 
@@ -126,6 +137,10 @@ def main():
         print '^C received, shutting down server'
         if server is not None:
             server.socket.close()
+    except:
+        if raven_client:
+            raven_client.captureException()
+        raise
 
 if __name__ == '__main__':
     main()
