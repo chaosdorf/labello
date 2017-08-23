@@ -19,7 +19,7 @@ except ImportError:
     pass
 
 # loop over all local vars and overwrite with found environ vars
-for name in vars().keys():
+for name in list(vars().keys()):
     if name.isupper() and name in os.environ:
         try:
             locals()[name] = int(os.environ[name])
