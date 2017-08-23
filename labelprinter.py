@@ -1,6 +1,9 @@
 #!/usr/bin/env python2
 # coding: utf-8
 
+# some compatibility with Python 3 (see #7)
+from __future__ import print_function
+
 import socket
 from brotherprint import BrotherPrint
 
@@ -27,7 +30,7 @@ class Labelprinter():
             charStyle='normal',
             cut='full'
     ):
-        print "start printing:", txt
+        print("start printing:", txt)
         
         self.printjob.select_font(font)
         self.printjob.char_size(charSize)  # 28 chars

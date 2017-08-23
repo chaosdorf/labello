@@ -2,6 +2,9 @@
 # coding: utf-8
 # https://fragments.turtlemeat.com/pythonwebserver.php
 
+# some compatibility with Python 3 (see #7)
+from __future__ import print_function
+
 import cgi
 import os
 import socket
@@ -29,7 +32,7 @@ class MyHandler(BaseHTTPRequestHandler):
 
             finalPath = self.path
             templateReplaceDict = {}
-            print 'self.path', self.path
+            print('self.path', self.path)
             if finalPath == '/':
                 finalPath = conf.SERVER_DEFAULT_TEMPLATE
 
@@ -65,14 +68,14 @@ class MyHandler(BaseHTTPRequestHandler):
         except Exception as ex:
             if raven_client:
                 raven_client.captureException()
-            print "ERROR: ", ex
+            print("ERROR: ", ex)
             self.send_error(500, 'ERROR: {}'.format(ex))
 
     def do_POST(self):
         self.send_response(301)
         try:
             ctype, pdict = cgi.parse_header(self.headers.getheader('content-type'))
-            print ctype, pdict
+            print(ctype, pdict)
             query = None
 
             if ctype == 'multipart/form-data':
@@ -81,7 +84,7 @@ class MyHandler(BaseHTTPRequestHandler):
                 length = int(self.headers.getheader('content-length'))
                 query = cgi.parse_qs(self.rfile.read(length), keep_blank_values=1)
 
-            print query
+            print(query)
             self.end_headers()
             text = query.get('text')
 
@@ -95,7 +98,7 @@ class MyHandler(BaseHTTPRequestHandler):
             self.wfile.write("POST OK.\n")
             self.wfile.write("start printing: " + finalTxt + "\n")
 
-            print finalTxt
+            print(finalTxt)
             
             labelprinter = Labelprinter(conf=conf)
 
@@ -123,7 +126,7 @@ class MyHandler(BaseHTTPRequestHandler):
         except Exception as ex:
             if raven_client:
                 raven_client.captureException()
-            print 'ERROR:', ex
+            print('ERROR:', ex)
             self.wfile.write("ERROR: " + str(ex))
 
 
@@ -131,10 +134,10 @@ def main():
     server = None
     try:
         server = HTTPServer(('', conf.SERVER_PORT), MyHandler)
-        print 'started httpserver on port ' + str(conf.SERVER_PORT) + ' ...'
+        print('started httpserver on port ' + str(conf.SERVER_PORT) + ' ...')
         server.serve_forever()
     except KeyboardInterrupt:
-        print '^C received, shutting down server'
+        print('^C received, shutting down server')
         if server is not None:
             server.socket.close()
     except:
