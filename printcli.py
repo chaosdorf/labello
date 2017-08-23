@@ -6,6 +6,11 @@ import os
 from labelprinter import Labelprinter
 import labelprinterServeConf as conf
 
+def show_config(args, labelprinter):
+    for var in dir(conf):
+        if(var.isupper()):
+            print("{} = {}".format(var, conf.__getattribute__(var)))
+
 def text(args, labelprinter):
     bold = 'on' if args.bold else 'off'
     labelprinter.printText(args.text,
@@ -28,8 +33,13 @@ parser_text.add_argument("--bold", action='store_true')
 parser_text.add_argument("--char_style", type=str, default='normal')
 parser_text.add_argument("--cut", type=str, default='full')
 parser_text.set_defaults(func=text)
+parser_config = subparsers.add_parser("config", help="show the config")
+parser_config.set_defaults(func=show_config)
 
 args = parser.parse_args()
 
-labelprinter = Labelprinter(conf=conf)
+if args.func != show_config:
+    labelprinter = Labelprinter(conf=conf)
+else:
+    labelprinter = None
 args.func(args, labelprinter)
