@@ -4,12 +4,17 @@
 
 # some compatibility with Python 3 (see #7)
 from __future__ import print_function
+from __future__ import unicode_literals
 
 import cgi
 import os
 import socket
+from io import open # compatibility to Python 2
 from brotherprint import BrotherPrint
-from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+try:
+    from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+except ImportError: # Python 3
+    from http.server import BaseHTTPRequestHandler, HTTPServer
 
 from labelprinter import Labelprinter
 import labelprinterServeConf as conf
@@ -36,6 +41,7 @@ class MyHandler(BaseHTTPRequestHandler):
             if finalPath == '/':
                 finalPath = conf.SERVER_DEFAULT_TEMPLATE
 
+            binary = False
             if finalPath == '/base':
                 import templates.base
                 templateReplaceDict = templates.base.getParseDict()
@@ -54,12 +60,15 @@ class MyHandler(BaseHTTPRequestHandler):
                 import templates.magic
                 templateReplaceDict = templates.magic.getParseDict()
                 template = open('www/app.js').read()
-            else:
-                template = open('www' + finalPath).read()
+            else: # most likely a binary file
+                binary = True
+                template = open('www' + finalPath, "rb").read()
 
-            for replaceKey, replaceValue in templateReplaceDict.iteritems():
-                template = template.replace('{{' + replaceKey + '}}', replaceValue)
-
+            if not binary:
+                for replaceKey, replaceValue in templateReplaceDict.items():
+                    template = template.replace('{{' + replaceKey + '}}', replaceValue)
+                template = template.encode("utf-8")
+            
             self.wfile.write(template)
             return
 
@@ -74,15 +83,18 @@ class MyHandler(BaseHTTPRequestHandler):
     def do_POST(self):
         self.send_response(301)
         try:
-            ctype, pdict = cgi.parse_header(self.headers.getheader('content-type'))
+            ctype, pdict = cgi.parse_header(self.headers.get('content-type'))
             print(ctype, pdict)
             query = None
 
             if ctype == 'multipart/form-data':
+                print(self.rfile)
+                for key in pdict.keys():
+                    pdict[key] = pdict[key].encode("utf-8")
                 query = cgi.parse_multipart(self.rfile, pdict)
             elif ctype == 'application/x-www-form-urlencoded':
-                length = int(self.headers.getheader('content-length'))
-                query = cgi.parse_qs(self.rfile.read(length), keep_blank_values=1)
+                length = int(self.headers.get('content-length'))
+                query = cgi.parse_qs(self.rfile.read(length).decode("utf-8"), keep_blank_values=1)
 
             print(query)
             self.end_headers()
@@ -90,13 +102,15 @@ class MyHandler(BaseHTTPRequestHandler):
 
             finalTxt = ''
             for txt in text:
+                if isinstance(txt, bytes):
+                    txt = txt.decode("utf-8")
                 finalTxt += txt
 
             if finalTxt.strip() == '':
                 raise RuntimeError('NO TEXT, NO LABEL!')
 
-            self.wfile.write("POST OK.\n")
-            self.wfile.write("start printing: " + finalTxt + "\n")
+            self.wfile.write(b"POST OK.\n")
+            self.wfile.write("start printing: {}\n".format(finalTxt).encode("utf-8"))
 
             print(finalTxt)
             
@@ -127,7 +141,7 @@ class MyHandler(BaseHTTPRequestHandler):
             if raven_client:
                 raven_client.captureException()
             print('ERROR:', ex)
-            self.wfile.write("ERROR: " + str(ex))
+            self.wfile.write("ERROR: {}".format(ex).encode("utf-8"))
 
 
 def main():
