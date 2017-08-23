@@ -4,11 +4,7 @@ import argparse
 import os
 
 from labelprinter import Labelprinter
-
-if os.path.isfile('labelprinterServeConf_local.py'):
-    import labelprinterServeConf_local as conf
-else:
-    import labelprinterServeConf as conf
+import labelprinterServeConf as conf
 
 def text(args, labelprinter):
     bold = 'on' if args.bold else 'off'
