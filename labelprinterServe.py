@@ -95,7 +95,7 @@ class MyHandler(BaseHTTPRequestHandler):
                 query = cgi.parse_multipart(self.rfile, pdict)
             elif ctype == 'application/x-www-form-urlencoded':
                 length = int(self.headers.get('content-length'))
-                query = cgi.parse_qs(self.rfile.read(length).decode("utf-8"), keep_blank_values=1)
+                query = cgi.parse_qs(self.rfile.read(length), keep_blank_values=1)
             elif ctype == "application/json":
                 length = int(self.headers.get('content-length'))
                 query = json.loads(self.rfile.read(length).decode("utf-8"))
@@ -103,7 +103,6 @@ class MyHandler(BaseHTTPRequestHandler):
             print(query)
             self.end_headers()
             text = query.get('text')
-
             finalTxt = ''
             for txt in text:
                 if isinstance(txt, bytes):
@@ -122,7 +121,7 @@ class MyHandler(BaseHTTPRequestHandler):
 
             if query.get('printMode', [''])[0] == 'barcode':
                 labelprinter.printBarcode(
-                    finalTxt,
+                    finalTxt.encode('utf-8'),
                     barcode=query.get('barcodeType', ['code39'])[0],
                     characters=query.get('barcodeCharacters', ['on'])[0],
                     height=int(query.get('barcodeHeight', [100])[0]),
@@ -133,7 +132,7 @@ class MyHandler(BaseHTTPRequestHandler):
                 )
             else:
                 labelprinter.printText(
-                    finalTxt,
+                    finalTxt.encode('utf-8'),
                     charSize=query.get('fontSize', [42])[0],
                     font=query.get('font', ['lettergothic'])[0],
                     align=query.get('align', ['left'])[0],
