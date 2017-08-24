@@ -10,6 +10,7 @@ import cgi
 import os
 import socket
 import json
+import imghdr
 from io import open # compatibility to Python 2
 from brotherprint import BrotherPrint
 try:
@@ -57,6 +58,10 @@ class MyHandler(BaseHTTPRequestHandler):
                 template = open('templates/magic.html').read()
             elif finalPath == '/choose':
                 template = open('templates/choose.html').read()
+            elif finalPath == '/pictures':
+                import templates.pictures
+                templateReplaceDict = templates.pictures.getParseDict()
+                template = open('templates/pictures.html').read()
             elif finalPath == '/app.js':
                 import templates.magic
                 templateReplaceDict = templates.magic.getParseDict()
@@ -84,6 +89,8 @@ class MyHandler(BaseHTTPRequestHandler):
     def do_POST(self):
         self.send_response(301)
         try:
+            printMode = "default"
+
             ctype, pdict = cgi.parse_header(self.headers.get('content-type'))
             print(ctype, pdict)
             query = None
@@ -100,26 +107,43 @@ class MyHandler(BaseHTTPRequestHandler):
                 length = int(self.headers.get('content-length'))
                 query = json.loads(self.rfile.read(length).decode("utf-8"))
 
-            print(query)
-            self.end_headers()
-            text = query.get('text')
+
+
+            printMode = query.get('printMode', ['default'])[0]
+
+            print('printMode:', printMode)
+
+            text = ''
             finalTxt = ''
-            for txt in text:
-                if isinstance(txt, bytes):
-                    txt = txt.decode("utf-8")
-                finalTxt += txt
+            if printMode != 'pictures':
+                print(query)
 
-            if finalTxt.strip() == '':
-                raise RuntimeError('NO TEXT, NO LABEL!')
+                self.end_headers()
+                text = query.get('text')
+                finalTxt = ''
+                for txt in text:
+                    if isinstance(txt, bytes):
+                        txt = txt.decode("utf-8")
+                    finalTxt += txt
 
-            self.wfile.write(b"POST OK.\n")
-            self.wfile.write("start printing: {}\n".format(finalTxt).encode("utf-8"))
+                if finalTxt.strip() == '':
+                    raise RuntimeError('NO TEXT, NO LABEL!')
 
-            print(finalTxt.encode('utf-8'))
+                self.wfile.write(b"POST OK.\n")
+                self.wfile.write("start printing: {}\n".format(finalTxt).encode("utf-8"))
+
+                print(finalTxt.encode('utf-8'))
+            else:
+                print(query.keys())
+
+                self.end_headers()
+                self.wfile.write(b"POST OK.\n")
+                self.wfile.write(b"start printing...\n")
             
             labelprinter = Labelprinter(conf=conf)
 
-            if query.get('printMode', [''])[0] == 'barcode':
+            #if query.get('printMode', [''])[0] == 'barcode':
+            if printMode == 'barcode':
                 labelprinter.printBarcode(
                     finalTxt.encode('utf-8'),
                     barcode=query.get('barcodeType', ['code39'])[0],
@@ -130,6 +154,22 @@ class MyHandler(BaseHTTPRequestHandler):
                     ratio=query.get('barcodeRatio', ['3:1'])[0],
                     equalize=query.get('barcodeEqualize', ['off'])[0]
                 )
+
+            elif printMode == 'pictures':
+                submitPicture = query.get('submitPicture', [None])[0]
+                pictureType = imghdr.what(None,h=submitPicture)
+                if pictureType is None:
+                    raise RuntimeError('NOT A VALID PICTURE!')
+                elif pictureType not in ['jpeg', 'png', 'bmp']:
+                    raise RuntimeError('INVALID PICTURE TYPE: ' + pictureType)
+
+                if pictureType == 'jpeg':
+                    pass
+                elif pictureType == 'png':
+                    pass
+
+                print('pictures!!!!!!')
+
             else:
                 labelprinter.printText(
                     finalTxt.encode('utf-8'),

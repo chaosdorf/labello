@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
     <head>
         <meta charset="utf-8"/>
-        <title>Choose Print-Mode | laibelprinter</title>
+        <title>laibelprinter - pictures</title>
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
@@ -29,32 +29,25 @@
                 flex: 1;
             }
             body {
+
                 font-family: monospace;
-            }
-            .btn {
-                width: 100%;
             }
         </style>
     </head>
     <body>
-        <div class="container container100">
-            <h2>Choose your weapon</h2>
+        <h1>WIP - NOT READY!</h1>
+        <form method="POST" target="_blank" enctype="multipart/form-data" class="form-group container container100" name="form_pictures">
+            <input type="hidden" name="printMode" value="pictures">
             <div>
-                <h3>for Users</h3>
                 <div class="form-group">
-                    <a href="/magic" class="btn btn-primary">Labels</a>
-                </div>
-                <h3>for Developers and techies</h3>
-                <div class="form-group">
-                    <a href="/base" class="btn btn-danger">Dev Labels</a>
-                </div>
-                <div class="form-group">
-                    <a href="/barcode" class="btn btn-danger">Dev Barcodes</a>
-                </div>
-                <div class="form-group">
-                    <a href="/pictures" class="btn btn-danger">Dev Pictures</a>
+                    <label class="label100" for="submitPicture">Submit Picture to print:</label>
+                    <input id="submitPicture" name="submitPicture" type="file" size="50" accept="image/jpg|image/jpeg|image/png">
                 </div>
             </div>
-        </div>
+
+            <div class="form-group container">
+                <input type="submit" value="PRINT" class="btn btn-primary ">
+            </div>
+        </form>
     </body>
 </html>
