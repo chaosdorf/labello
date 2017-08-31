@@ -10,7 +10,6 @@ import cgi
 import os
 import socket
 import json
-import imghdr
 from io import open # compatibility to Python 2
 from brotherprint import BrotherPrint
 try:
@@ -107,8 +106,6 @@ class MyHandler(BaseHTTPRequestHandler):
                 length = int(self.headers.get('content-length'))
                 query = json.loads(self.rfile.read(length).decode("utf-8"))
 
-
-
             printMode = query.get('printMode', ['default'])[0]
 
             print('printMode:', printMode)
@@ -133,6 +130,7 @@ class MyHandler(BaseHTTPRequestHandler):
                 self.wfile.write("start printing: {}\n".format(finalTxt).encode("utf-8"))
 
                 print(finalTxt.encode('utf-8'))
+
             else:
                 print(query.keys())
 
@@ -157,17 +155,7 @@ class MyHandler(BaseHTTPRequestHandler):
 
             elif printMode == 'pictures':
                 submitPicture = query.get('submitPicture', [None])[0]
-                pictureType = imghdr.what(None,h=submitPicture)
-                if pictureType is None:
-                    raise RuntimeError('NOT A VALID PICTURE!')
-                elif pictureType not in ['jpeg', 'png', 'bmp']:
-                    raise RuntimeError('INVALID PICTURE TYPE: ' + pictureType)
-
-                if pictureType == 'jpeg':
-                    pass
-                elif pictureType == 'png':
-                    pass
-
+                labelprinter.printPicture(submitPicture)
                 print('pictures!!!!!!')
 
             else:
@@ -180,6 +168,7 @@ class MyHandler(BaseHTTPRequestHandler):
                     charStyle=query.get('charStyle', ['normal'])[0],
                     cut=query.get('cut', ['full'])[0],
                 )
+
         except Exception as ex:
             if raven_client:
                 raven_client.captureException()
