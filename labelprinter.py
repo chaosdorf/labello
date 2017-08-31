@@ -3,6 +3,7 @@
 
 # some compatibility with Python 3 (see #7)
 from __future__ import print_function
+from __future__ import unicode_literals
 
 import socket
 from brotherprint import BrotherPrint
