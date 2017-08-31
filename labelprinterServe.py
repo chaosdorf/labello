@@ -115,7 +115,7 @@ class MyHandler(BaseHTTPRequestHandler):
             self.wfile.write(b"POST OK.\n")
             self.wfile.write("start printing: {}\n".format(finalTxt).encode("utf-8"))
 
-            print(finalTxt.encode('utf-8'))
+            print(finalTxt)
             
             labelprinter = Labelprinter(conf=conf)
 

@@ -31,7 +31,7 @@ class Labelprinter():
             charStyle='normal',
             cut='full'
     ):
-        print("start printing:", txt.encode('utf-8'))
+        print("start printing:", txt)
         
         self.printjob.select_font(font)
         self.printjob.char_size(charSize)  # 28 chars
