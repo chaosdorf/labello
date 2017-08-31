@@ -30,7 +30,7 @@ class Labelprinter():
             charStyle='normal',
             cut='full'
     ):
-        print("start printing:", txt)
+        print("start printing:", txt.encode('utf-8'))
         
         self.printjob.select_font(font)
         self.printjob.char_size(charSize)  # 28 chars
@@ -39,7 +39,7 @@ class Labelprinter():
         self.printjob.char_style(charStyle)
         self.printjob.cut_setting(cut)
 
-        self.printjob.send(txt.decode('utf8').encode('windows-1252'))
+        self.printjob.send(txt.encode('windows-1252'))
         self.printjob.print_page(cut)
     
     def printBarcode(self, txt, barcode, characters='on', height=100, width='medium', parentheses='on', ratio='3:1', equalize='off'):
@@ -52,5 +52,5 @@ class Labelprinter():
         equalize='off' equalize: equalize bar lengths, choose 'off' or 'on'
         '''
 
-        self.printjob.barcode(txt, barcode, characters, height, width, parentheses, ratio, equalize)
+        self.printjob.barcode(txt.encode('windows-1252'), barcode, characters, height, width, parentheses, ratio, equalize)
         self.printjob.print_page('full')

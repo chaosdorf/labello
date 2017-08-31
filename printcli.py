@@ -13,7 +13,7 @@ def show_config(args, labelprinter):
 
 def text(args, labelprinter):
     bold = 'on' if args.bold else 'off'
-    labelprinter.printText(args.text,
+    labelprinter.printText(args.text.decode('utf-8'),
                 charSize=args.char_size,
                 font=args.font,
                 align=args.align,

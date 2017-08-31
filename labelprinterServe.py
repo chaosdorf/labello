@@ -121,7 +121,7 @@ class MyHandler(BaseHTTPRequestHandler):
 
             if query.get('printMode', [''])[0] == 'barcode':
                 labelprinter.printBarcode(
-                    finalTxt.encode('utf-8'),
+                    finalTxt,
                     barcode=query.get('barcodeType', ['code39'])[0],
                     characters=query.get('barcodeCharacters', ['on'])[0],
                     height=int(query.get('barcodeHeight', [100])[0]),
@@ -132,7 +132,7 @@ class MyHandler(BaseHTTPRequestHandler):
                 )
             else:
                 labelprinter.printText(
-                    finalTxt.encode('utf-8'),
+                    finalTxt,
                     charSize=query.get('fontSize', [42])[0],
                     font=query.get('font', ['lettergothic'])[0],
                     align=query.get('align', ['left'])[0],
