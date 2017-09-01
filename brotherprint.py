@@ -326,7 +326,7 @@ class BrotherPrint:
             None'''
         # Treat not already encoded strings as ASCII.
         if(not isinstance(text, bytes)):
-            text = text.encode('ascii')
+            text = text.encode('windows-1252')
         self.fsocket.send(text)
         
     def forward_feed(self, amount):
@@ -864,8 +864,10 @@ class BrotherPrint:
                             'on': '1'}
         
         sendstr = ''
-        n2 = height/256
+        n2 = height//256
         n1 = height%256
+        if(not isinstance(data, str)): # Python 3
+            data = data.decode('windows-1252') # TODO: Correct encoding on Python 3.
         if format in barcodes and width in widths and ratio in ratios and characters in character_choices and rss_symbol in rss_symbols:
             sendstr += (chr(27)+'i'+'t'+barcodes[format]+'s'+'p'+'r'+character_choices[characters]+'u'+'x'+'y'+'h' + chr(n1) + chr(n2) +
                         'w'+widths[width]+'e'+parentheses_choices[parentheses]+'o'+rss_symbols[rss_symbol]+'c'+chr(horiz_char_rss)+'z'+ratios[ratio]+'f'+equalize_choices[equalize]
