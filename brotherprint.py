@@ -324,6 +324,9 @@ class BrotherPrint:
             None
         Raises:
             None'''
+        # Treat not already encoded strings as ASCII.
+        if(not isinstance(text, bytes)):
+            text = text.encode('ascii')
         self.fsocket.send(text)
         
     def forward_feed(self, amount):
