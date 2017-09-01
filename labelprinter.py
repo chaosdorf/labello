@@ -1,4 +1,3 @@
-#!/usr/bin/env python2
 # coding: utf-8
 
 # some compatibility with Python 3 (see #7)
