@@ -15,7 +15,11 @@ def show_config(args, labelprinter):
 
 def text(args, labelprinter):
     bold = 'on' if args.bold else 'off'
-    labelprinter.printText(args.text.decode('utf-8'),
+    if isinstance(args.text, bytes):
+        text = args.text.decode('utf-8')
+    else:
+        text = args.text
+    labelprinter.printText(text,
                 charSize=args.char_size,
                 font=args.font,
                 align=args.align,
