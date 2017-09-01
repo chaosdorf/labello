@@ -27,6 +27,15 @@ if conf.SENTRY_DSN:
 else:
     raven_client = None
 
+def strip_query(query):
+    for key in query.keys():
+        # replace lists with their first element
+        if isinstance(query[key], list):
+            query[key] = query[key][0]
+        # decode bytes if possible
+        if isinstance(query[key], bytes):
+            query[key] = query[key].decode('utf-8')
+
 class MyHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
@@ -105,45 +114,40 @@ class MyHandler(BaseHTTPRequestHandler):
                 length = int(self.headers.get('content-length'))
                 query = json.loads(self.rfile.read(length).decode("utf-8"))
 
+            if ctype != "application/json":
+                strip_query(query)
+            
             print(query)
             self.end_headers()
-            text = query.get('text')
-            finalTxt = ''
-            for txt in text:
-                if isinstance(txt, bytes):
-                    txt = txt.decode("utf-8")
-                finalTxt += txt
-
-            if finalTxt.strip() == '':
+            
+            if query['text'].strip() == '':
                 raise RuntimeError('NO TEXT, NO LABEL!')
 
             self.wfile.write(b"POST OK.\n")
-            self.wfile.write("start printing: {}\n".format(finalTxt).encode("utf-8"))
+            self.wfile.write("start printing: {}\n".format(query['text']).encode("utf-8"))
 
-            print(finalTxt)
-            
             labelprinter = Labelprinter(conf=conf)
 
-            if query.get('printMode', [''])[0] == 'barcode':
+            if query.get('printMode', '') == 'barcode':
                 labelprinter.printBarcode(
-                    finalTxt,
-                    barcode=query.get('barcodeType', ['code39'])[0],
-                    characters=query.get('barcodeCharacters', ['on'])[0],
-                    height=int(query.get('barcodeHeight', [100])[0]),
-                    width=query.get('barcodeWidth', ['medium'])[0],
-                    parentheses=query.get('barcodeParentheses', ['on'])[0],
-                    ratio=query.get('barcodeRatio', ['3:1'])[0],
-                    equalize=query.get('barcodeEqualize', ['off'])[0]
+                    query['text'],
+                    barcode=query.get('barcodeType', 'code39'),
+                    characters=query.get('barcodeCharacters', 'on'),
+                    height=int(query.get('barcodeHeight', 100)),
+                    width=query.get('barcodeWidth', 'medium'),
+                    parentheses=query.get('barcodeParentheses', 'on'),
+                    ratio=query.get('barcodeRatio', '3:1'),
+                    equalize=query.get('barcodeEqualize', 'off')
                 )
             else:
                 labelprinter.printText(
-                    finalTxt,
-                    charSize=query.get('fontSize', [42])[0],
-                    font=query.get('font', ['lettergothic'])[0],
-                    align=query.get('align', ['left'])[0],
-                    bold=query.get('bold', ['off'])[0],
-                    charStyle=query.get('charStyle', ['normal'])[0],
-                    cut=query.get('cut', ['full'])[0],
+                    query['text'],
+                    charSize=query.get('fontSize', 42),
+                    font=query.get('font', 'lettergothic'),
+                    align=query.get('align', 'left'),
+                    bold=query.get('bold', 'off'),
+                    charStyle=query.get('charStyle', 'normal'),
+                    cut=query.get('cut', 'full'),
                 )
         except Exception as ex:
             if raven_client:
