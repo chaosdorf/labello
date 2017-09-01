@@ -10,6 +10,7 @@ import cgi
 import os
 import socket
 import json
+import sys
 from io import open # compatibility to Python 2
 from brotherprint import BrotherPrint
 try:
@@ -95,7 +96,11 @@ class MyHandler(BaseHTTPRequestHandler):
                 query = cgi.parse_multipart(self.rfile, pdict)
             elif ctype == 'application/x-www-form-urlencoded':
                 length = int(self.headers.get('content-length'))
-                query = cgi.parse_qs(self.rfile.read(length), keep_blank_values=1)
+                if sys.version_info.major == 2:
+                    data = self.rfile.read(length)
+                else:
+                    data = self.rfile.read(length).decode('utf-8')
+                query = cgi.parse_qs(data, keep_blank_values=1)
             elif ctype == "application/json":
                 length = int(self.headers.get('content-length'))
                 query = json.loads(self.rfile.read(length).decode("utf-8"))
