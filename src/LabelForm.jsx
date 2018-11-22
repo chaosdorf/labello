@@ -61,6 +61,7 @@ export default class LabelForm extends React.Component {
         <FormInput
           name="text"
           style={labelStyle}
+          defaultValue={text}
           multiline
           placeholder="Label Text"/>
         <br />

@@ -6,6 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>laibelprinter</title>
   <script>
+  window.text = "{{text}}";
   window.sizesBitmap = {{sizesBitmap}}.map(x => Number.parseInt(x))
   .sort((a, b) => a - b)
   .map(x => x.toString())
