@@ -107,6 +107,8 @@ class MyHandler(BaseHTTPRequestHandler):
             if raven_client:
                 raven_client.captureException()
             print("ERROR: ", ex)
+            import traceback
+            traceback.print_exc()
             self.send_error(500, 'ERROR: {}'.format(ex))
 
     def do_POST(self):
@@ -180,6 +182,8 @@ class MyHandler(BaseHTTPRequestHandler):
             if raven_client:
                 raven_client.captureException()
             print('ERROR:', ex)
+            import traceback
+            traceback.print_exc()
             self.wfile.write("ERROR: {}".format(ex).encode("utf-8"))
 
 
