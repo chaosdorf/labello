@@ -1072,7 +1072,21 @@ class BrotherPrint:
         self.select_obj(name)
         self.insert_into_obj(data)
 
-    def qr_code(self, data, cell_size=4):
+    def qr_code(self,
+                data='',
+                cell_size=4, # max 10
+                symbol_type=2,
+                partitioned=0,
+                partition=0,
+                parity=0,
+                error_correction=4, # 1=L(7%), 2=M(15%, default), 3=Q(25%), 4=H(30%)
+                data_input=0):
+        header = chr(0x1b) + 'iq'+ chr(cell_size) + chr(symbol_type) + chr(partitioned) + chr(partition) + chr(parity)  + chr(error_correction) + chr(data_input) + 'a'
+        self.send(header+data+'\\\\\\')
+
+    def qr_code_simple(self,
+                data,
+                cell_size=4):
         symbol_type = 2
         partitioned = 0
         partition = 0

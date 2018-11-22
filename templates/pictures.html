@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8"/>
-        <title>laibelprinter</title>
+        <title>laibelprinter - pictures</title>
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
@@ -35,32 +35,13 @@
         </style>
     </head>
     <body>
-        <form method="POST" target="_blank" enctype="multipart/form-data" class="form-group container container100">
-            <textarea name="text" cols="28" rows="15">{{text}}</textarea>
+        <h1>WIP - NOT READY!</h1>
+        <form method="POST" target="_blank" enctype="multipart/form-data" class="form-group container container100" name="form_pictures">
+            <input type="hidden" name="printMode" value="pictures">
             <div>
                 <div class="form-group">
-                    <label class="label100" for="fontSize">Font Size:</label>
-                    <select name="fontSize" id="fontSize">{{sizesCmb}}</select>
-                </div>
-                <div class="form-group">
-                    <label class="label100" for="font">Font:</label>
-                    <select name="font" id="font">{{fontsCmb}}</select>
-                </div>
-                <div class="form-group">
-                    <label class="label100" for="align">Align:</label>
-                    <select name="align" id="align">{{alignsCmb}}</select>
-                </div>
-                <div class="form-group">
-                    <label class="label100" for="bold">Bold:</label>
-                    <input type="checkbox" name="bold" id="bold" value="on">
-                </div>
-                <div class="form-group">
-                    <label class="label100" for="charStyle">Char Style:</label>
-                    <select name="charStyle" id="charStyle">{{charStylesCmb}}</select>
-                </div>
-                <div class="form-group">
-                    <label class="label100" for="cut">Cutter:</label> (broken!)
-                    <select name="cut" id="cut">{{cutsCmb}}</select>
+                    <label class="label100" for="submitPicture">Submit Picture to print:</label>
+                    <input id="submitPicture" name="submitPicture" type="file" size="50" accept="image/jpg|image/jpeg|image/png">
                 </div>
             </div>
 

@@ -15,8 +15,11 @@ from io import open # compatibility to Python 2
 from brotherprint import BrotherPrint
 try:
     from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+    from urlparse import urlparse, parse_qs
 except ImportError: # Python 3
     from http.server import BaseHTTPRequestHandler, HTTPServer
+    from urllib.parse import urlparse, parse_qs
+
 
 from labelprinter import Labelprinter
 import labelprinterServeConf as conf
@@ -46,11 +49,17 @@ class MyHandler(BaseHTTPRequestHandler):
 
             template = ''
 
-            finalPath = self.path
+
+            parsedUrl = urlparse(self.path)
+            query_components = parse_qs(parsedUrl.query)
+            finalPath = parsedUrl.path
             templateReplaceDict = {}
             print('self.path', self.path)
             if finalPath == '/':
                 finalPath = conf.SERVER_DEFAULT_TEMPLATE
+
+            #print('path', parsedUrl.path)
+            #print(query_components)
 
             binary = False
             if finalPath == '/base':
@@ -67,6 +76,10 @@ class MyHandler(BaseHTTPRequestHandler):
                 template = open('templates/magic.html').read()
             elif finalPath == '/choose':
                 template = open('templates/choose.html').read()
+            elif finalPath == '/pictures':
+                import templates.pictures
+                templateReplaceDict = templates.pictures.getParseDict()
+                template = open('templates/pictures.html').read()
             elif finalPath == '/app.js':
                 import templates.magic
                 templateReplaceDict = templates.magic.getParseDict()
@@ -74,6 +87,11 @@ class MyHandler(BaseHTTPRequestHandler):
             else: # most likely a binary file
                 binary = True
                 template = open('www' + finalPath, "rb").read()
+
+            if query_components.get('text'):
+                templateReplaceDict['text'] = query_components['text'][0]
+            else:
+                templateReplaceDict['text'] = ''
 
             if not binary:
                 for replaceKey, replaceValue in templateReplaceDict.items():
@@ -94,6 +112,8 @@ class MyHandler(BaseHTTPRequestHandler):
     def do_POST(self):
         self.send_response(301)
         try:
+            printMode = "default"
+
             ctype, pdict = cgi.parse_header(self.headers.get('content-type'))
             print(ctype, pdict)
             query = None
@@ -139,6 +159,12 @@ class MyHandler(BaseHTTPRequestHandler):
                     ratio=query.get('barcodeRatio', '3:1'),
                     equalize=query.get('barcodeEqualize', 'off')
                 )
+
+            elif printMode == 'pictures':
+                print('pictures!!!!!!')
+                print(query.keys())
+                submitPicture = query.get('submitPicture', [None])[0]
+                labelprinter.printPicture(submitPicture)
             else:
                 labelprinter.printText(
                     query['text'],
@@ -149,6 +175,7 @@ class MyHandler(BaseHTTPRequestHandler):
                     charStyle=query.get('charStyle', 'normal'),
                     cut=query.get('cut', 'full'),
                 )
+
         except Exception as ex:
             if raven_client:
                 raven_client.captureException()

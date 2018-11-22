@@ -5,7 +5,9 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import socket
+import imghdr
 from brotherprint import BrotherPrint
+
 
 class Labelprinter():
     def __init__(self, conf=None, printjob=None):
@@ -54,3 +56,15 @@ class Labelprinter():
 
         self.printjob.barcode(txt.encode('windows-1252', 'replace'), barcode, characters, height, width, parentheses, ratio, equalize)
         self.printjob.print_page('full')
+
+    def printPicture(self, pictureBytes):
+        pictureType = imghdr.what(None, h=pictureBytes)
+        if pictureType is None:
+            raise RuntimeError('NOT A VALID PICTURE!')
+        elif pictureType not in ['jpeg', 'png', 'bmp']:
+            raise RuntimeError('INVALID PICTURE TYPE: ' + pictureType)
+
+        if pictureType == 'jpeg':
+            pass
+        elif pictureType == 'png':
+            pass
