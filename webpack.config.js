@@ -1,62 +1,76 @@
-/* eslint camelcase: 0 header/header: 0 */
+// @flow
 const path = require('path');
-const process = require('process');
 const webpack = require('webpack');
+const TerserPlugin = require('terser-webpack-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
-const node_env = process.env.NODE_ENV || 'development';
+const isDev = process.env.NODE_ENV !== 'production';
+
 const plugins = [
-  new webpack.NoErrorsPlugin(),
   new webpack.DefinePlugin({
     'process.env': {
-      NODE_ENV: JSON.stringify(node_env),
+      NODE_ENV: JSON.stringify(process.env.NODE_ENV),
     },
-    IS_PRODUCTION: JSON.stringify(node_env === 'production'),
   }),
 ];
 
-if (node_env === 'production') {
-  plugins.push(new webpack.optimize.UglifyJsPlugin());
+const optimization = {
+  minimizer: [
+    new OptimizeCSSAssetsPlugin({
+      cssProcessor: require('cssnano'),
+      cssProcessorOptions: { discardComments: { removeAll: true } },
+    }),
+  ],
+};
+
+const rules = [
+  {
+    test: /\.jsx?$/,
+    use: ['babel-loader'],
+  },
+  {
+    test: /\.(css|less)$/,
+    use: [
+      { loader: 'style-loader' },
+      { loader: 'css-loader' },
+      { loader: 'less-loader' },
+    ],
+  },
+  {
+    test: /\.(jpg|jpeg|png|woff|woff2|eot|ttf|svg)$/,
+    loader: 'url-loader?limit=8192',
+  },
+];
+
+if (!isDev) {
+  plugins.push(
+    new TerserPlugin({
+      parallel: true,
+      extractComments: true,
+    })
+  );
 }
 
 module.exports = {
-  context: __dirname,
-  resolve: {
-    extensions: ['.js', '.jsx'],
-    modules: [path.resolve('src'), 'node_modules'],
+  plugins,
+  mode: isDev ? 'development' : 'production',
+  devtool: isDev ? 'cheap-module-eval-source-map' : false,
+  entry: {
+    main: ['./src/entry.js'],
   },
-  entry: ['entry.js'],
+  resolve: {
+    modules: ['node_modules', path.resolve(__dirname, 'src')],
+    extensions: ['.js', '.json', '.jsx'],
+    alias: {
+      'lodash-es': 'lodash',
+    },
+  },
   output: {
     path: path.resolve('www'),
     filename: 'app.js',
     publicPath: '',
   },
   module: {
-    rules: [
-      { test: /\.less$/, loader: 'style-loader!css-loader!less-loader' },
-      { test: /\.css$/, loader: 'style-loader!css-loader' },
-      {
-        test: /\.jsx?$/,
-        exclude: /(node_modules|primusClient)/,
-        loader: 'babel-loader',
-        include: [path.resolve(__dirname, 'src')],
-        query: { cacheDirectory: true },
-      },
-      { test: /\.(jpg|png|gif)$/, loader: 'file-loader!image-loader' },
-      { test: /\.woff2?(\?v=.*)?$/, loader: 'file-loader' },
-      { test: /\.(eot|ttf|svg|otf)(\?v=.*)?$/, loader: 'file-loader' },
-    ],
+    rules,
   },
-  plugins,
 };
-
-if (process.env.NODE_ENV !== 'production') {
-  //Art der Sourcemap
-  module.exports.devtool = 'source-map';
-  module.exports.module.rules.push({
-    enforce: 'pre',
-    test: /.jsx?$/,
-    loader: 'eslint-loader',
-    include: [path.resolve(__dirname, 'src')],
-    exclude: /(.*\.config.*|.*node_modules.*|.*inferno.*)/,
-  });
-}
