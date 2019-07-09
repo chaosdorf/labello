@@ -25,3 +25,7 @@ for name in list(vars().keys()):
             locals()[name] = int(os.environ[name])
         except ValueError:
             locals()[name] = os.environ[name]
+
+# get SENTRY_DSN from a secret (if it exists)
+if os.path.exists("/run/secrets/SENTRY_DSN"):
+    SENTRY_DSN = open("/run/secrets/SENTRY_DSN").read().strip()
