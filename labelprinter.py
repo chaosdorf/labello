@@ -6,6 +6,7 @@ from __future__ import unicode_literals
 
 import socket
 import imghdr
+import logging
 from brotherprint import BrotherPrint
 
 
@@ -32,7 +33,7 @@ class Labelprinter():
             charStyle='normal',
             cut='full'
     ):
-        print("start printing:", txt)
+        logging.debug("start printing: " + txt)
         
         self.printjob.select_font(font)
         self.printjob.char_size(charSize)  # 28 chars

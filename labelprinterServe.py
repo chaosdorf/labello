@@ -7,6 +7,7 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import cgi
+import logging
 import os
 import socket
 import json
@@ -30,6 +31,7 @@ if conf.SENTRY_DSN:
 else:
     raven_client = None
 
+
 def strip_query(query):
     for key in query.keys():
         # replace lists with their first element
@@ -38,6 +40,11 @@ def strip_query(query):
         # decode bytes if possible
         if isinstance(query[key], bytes):
             query[key] = query[key].decode('utf-8')
+
+
+def log_print(*args):
+    return ' '.join(str(a) for a in args)
+
 
 class MyHandler(BaseHTTPRequestHandler):
 
@@ -49,12 +56,11 @@ class MyHandler(BaseHTTPRequestHandler):
 
             template = ''
 
-
             parsedUrl = urlparse(self.path)
             query_components = parse_qs(parsedUrl.query)
             finalPath = parsedUrl.path
             templateReplaceDict = {}
-            print('self.path', self.path)
+            logging.debug(log_print('self.path', self.path))
             if finalPath == '/':
                 finalPath = conf.SERVER_DEFAULT_TEMPLATE
 
@@ -106,7 +112,8 @@ class MyHandler(BaseHTTPRequestHandler):
         except Exception as ex:
             if raven_client:
                 raven_client.captureException()
-            print("ERROR: ", ex)
+
+            logging.error(log_print("ERROR:", ex))
             import traceback
             traceback.print_exc()
             self.send_error(500, 'ERROR: {}'.format(ex))
@@ -117,11 +124,11 @@ class MyHandler(BaseHTTPRequestHandler):
             printMode = "default"
 
             ctype, pdict = cgi.parse_header(self.headers.get('content-type'))
-            print(ctype, pdict)
+            logging.debug(log_print(ctype, pdict))
             query = None
 
             if ctype == 'multipart/form-data':
-                print(self.rfile)
+                logging.debug(log_print(self.rfile))
                 for key in pdict.keys():
                     pdict[key] = pdict[key].encode("utf-8")
                 query = cgi.parse_multipart(self.rfile, pdict)
@@ -139,7 +146,7 @@ class MyHandler(BaseHTTPRequestHandler):
             if ctype != "application/json":
                 strip_query(query)
             
-            print(query)
+            logging.debug(log_print(query))
             self.end_headers()
             
             if query['text'].strip() == '':
@@ -163,10 +170,11 @@ class MyHandler(BaseHTTPRequestHandler):
                 )
 
             elif printMode == 'pictures':
-                print('pictures!!!!!!')
-                print(query.keys())
-                submitPicture = query.get('submitPicture', [None])[0]
-                labelprinter.printPicture(submitPicture)
+                logging.debug(log_print('pictures!!!!!!'))
+                logging.debug(log_print(query.keys()))
+
+                submit_picture = query.get('submitPicture', [None])[0]
+                labelprinter.printPicture(submit_picture)
             else:
                 labelprinter.printText(
                     query['text'],
@@ -181,7 +189,8 @@ class MyHandler(BaseHTTPRequestHandler):
         except Exception as ex:
             if raven_client:
                 raven_client.captureException()
-            print('ERROR:', ex)
+
+            logging.error(log_print('ERROR:', ex))
             import traceback
             traceback.print_exc()
             self.wfile.write("ERROR: {}".format(ex).encode("utf-8"))
@@ -191,16 +200,18 @@ def main():
     server = None
     try:
         server = HTTPServer(('', conf.SERVER_PORT), MyHandler)
-        print('started httpserver on port ' + str(conf.SERVER_PORT) + ' ...')
+        logging.info(log_print('started httpserver on port', str(conf.SERVER_PORT), ' ...'))
         server.serve_forever()
     except KeyboardInterrupt:
-        print('^C received, shutting down server')
+        logging.info(log_print('^C received, shutting down server'))
         if server is not None:
             server.socket.close()
-    except:
+    except Exception as ex:
         if raven_client:
             raven_client.captureException()
-        raise
+        raise ex
+
 
 if __name__ == '__main__':
+    logging.info(log_print('Log level is set to:', logging.getLogger().getEffectiveLevel()))
     main()

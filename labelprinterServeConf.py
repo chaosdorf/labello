@@ -1,4 +1,5 @@
 import os
+import logging
 
 # HTTP-Server
 SERVER_PORT = 8000
@@ -11,6 +12,7 @@ PRINTER_PORT = 9100
 
 # error logging
 SENTRY_DSN = None
+DEBUG_LOG_LEVEL = logging.ERROR
 
 # try to overwrite default vars with the local config file
 try:
@@ -29,3 +31,5 @@ for name in list(vars().keys()):
 # get SENTRY_DSN from a secret (if it exists)
 if os.path.exists("/run/secrets/SENTRY_DSN"):
     SENTRY_DSN = open("/run/secrets/SENTRY_DSN").read().strip()
+
+logging.basicConfig(level=DEBUG_LOG_LEVEL)
