@@ -50,10 +50,6 @@ class MyHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         try:
-            self.send_response(200)
-            self.send_header('Content-type', 'text/html')
-            self.end_headers()
-
             template = ''
 
             parsedUrl = urlparse(self.path)
@@ -104,7 +100,7 @@ class MyHandler(BaseHTTPRequestHandler):
                     template = template.replace('{{' + replaceKey + '}}', replaceValue)
                 template = template.encode("utf-8")
             
-            self.wfile.write(template)
+            self.send_ok(template)
             return
 
         except IOError as ex:
@@ -117,6 +113,12 @@ class MyHandler(BaseHTTPRequestHandler):
             import traceback
             traceback.print_exc()
             self.send_error(500, 'ERROR: {}'.format(ex))
+
+    def send_ok(self, content):
+        self.send_response(200)
+        self.send_header('Content-type', 'text/html')
+        self.end_headers()
+        self.wfile.write(content)
 
     def do_POST(self):
         self.send_response(301)
@@ -193,7 +195,7 @@ class MyHandler(BaseHTTPRequestHandler):
             logging.error(log_print('ERROR:', ex))
             import traceback
             traceback.print_exc()
-            self.wfile.write("ERROR: {}".format(ex).encode("utf-8"))
+            self.send_error(500, "ERROR: {}".format(ex).encode("utf-8"))
 
 
 def main():
