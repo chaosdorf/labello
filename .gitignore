@@ -70,3 +70,4 @@ target/
 node_modules
 .DS_Store
 labelprinterServeConf_local.py
+venv
