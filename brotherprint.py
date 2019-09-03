@@ -395,7 +395,7 @@ class BrotherPrint:
         '''
         n1 = amount%256
         n2 = amount/256
-        self.send(chr(27)+'\{n1}{n2}'.format(n1=chr(n1),n2=chr(n2)))
+        self.send(chr(27)+'\\{n1}{n2}'.format(n1=chr(n1),n2=chr(n2)))
 
     def alignment(self, align):
         '''Sets the alignment of the printer.
