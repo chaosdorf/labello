@@ -15,4 +15,3 @@ python labelprinterServe.py
 ```
 
 or: use Docker  
-or: use Vagrant  
