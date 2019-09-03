@@ -195,7 +195,7 @@ class MyHandler(BaseHTTPRequestHandler):
             logging.error(log_print('ERROR:', ex))
             import traceback
             traceback.print_exc()
-            self.send_error(500, "ERROR: {}".format(ex).encode("utf-8"))
+            self.send_error(500, "ERROR: {}".format(ex))
 
 
 def main():
