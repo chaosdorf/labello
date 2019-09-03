@@ -140,7 +140,7 @@ class MyHandler(BaseHTTPRequestHandler):
                     data = self.rfile.read(length)
                 else:
                     data = self.rfile.read(length).decode('utf-8')
-                query = cgi.parse_qs(data, keep_blank_values=1)
+                query = parse_qs(data, keep_blank_values=1)
             elif ctype == "application/json":
                 length = int(self.headers.get('content-length'))
                 query = json.loads(self.rfile.read(length).decode("utf-8"))
