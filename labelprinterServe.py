@@ -128,22 +128,22 @@ class MyHandler(BaseHTTPRequestHandler):
             ctype, pdict = cgi.parse_header(self.headers.get('content-type'))
             logging.debug(log_print(ctype, pdict))
             query = None
+            clength = int(self.headers.get('content-length'))
 
             if ctype == 'multipart/form-data':
                 logging.debug(log_print(self.rfile))
                 for key in pdict.keys():
                     pdict[key] = pdict[key].encode("utf-8")
+                pdict["CONTENT-LENGTH"] = clength
                 query = cgi.parse_multipart(self.rfile, pdict)
             elif ctype == 'application/x-www-form-urlencoded':
-                length = int(self.headers.get('content-length'))
                 if sys.version_info.major == 2:
-                    data = self.rfile.read(length)
+                    data = self.rfile.read(clength)
                 else:
-                    data = self.rfile.read(length).decode('utf-8')
+                    data = self.rfile.read(clength).decode('utf-8')
                 query = parse_qs(data, keep_blank_values=1)
             elif ctype == "application/json":
-                length = int(self.headers.get('content-length'))
-                query = json.loads(self.rfile.read(length).decode("utf-8"))
+                query = json.loads(self.rfile.read(clength).decode("utf-8"))
 
             if ctype != "application/json":
                 strip_query(query)
