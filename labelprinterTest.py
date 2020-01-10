@@ -52,8 +52,7 @@ def testQRcode(printjob):
     printjob.char_style('normal')
     printjob.print_page('full')
 
-f_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-f_socket.connect((conf.PRINTER_HOST, conf.PRINTER_PORT))
+f_socket = socket.create_connection((conf.PRINTER_HOST, conf.PRINTER_PORT))
 printjob = BrotherPrint(f_socket)
 
 
