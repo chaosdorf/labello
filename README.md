@@ -15,3 +15,14 @@ python labelprinterServe.py
 ```
 
 or: use Docker  
+
+## POSSIBLE PROBLEMS AND POSSIBLE SOLUTIONS ##
+
+### weird behaviour on old Python versions ###
+
+The main deployment of this software uses a relatively current version
+of Python (take a look at `Dockerfile` to see which one).
+
+If you experience weird bugs (especially encoding-related ones)
+while using an older version of Python, please file an issue and
+try to use a newer version of Python.
