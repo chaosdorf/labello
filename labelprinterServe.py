@@ -21,7 +21,6 @@ except ImportError: # Python 3
     from http.server import BaseHTTPRequestHandler, HTTPServer
     from urllib.parse import urlparse, parse_qs
 
-
 from labelprinter import Labelprinter
 import labelprinterServeConf as conf
 
@@ -200,9 +199,17 @@ class MyHandler(BaseHTTPRequestHandler):
 
 def main():
     server = None
+    # ask the system what the configured bind address means
+    bindings = socket.getaddrinfo(
+        conf.SERVER_ADDRESS, conf.SERVER_PORT, 0, socket.SOCK_STREAM
+    )
+    assert len(bindings) == 1  # The result should be unambiguous.
+    # The next line shouldn't be needed for 3.8 and newer,
+    # see https://bugs.python.org/issue24209.
+    HTTPServer.address_family = bindings[0][0]
     try:
-        server = HTTPServer(('', conf.SERVER_PORT), MyHandler)
-        logging.info(log_print('started httpserver on port', str(conf.SERVER_PORT), ' ...'))
+        server = HTTPServer(bindings[0][4], MyHandler)
+        logging.info(log_print('started httpserver on', bindings[0][4], ' ...'))
         server.serve_forever()
     except KeyboardInterrupt:
         logging.info(log_print('^C received, shutting down server'))
