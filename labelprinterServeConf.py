@@ -2,7 +2,7 @@ import os
 import logging
 
 # HTTP-Server
-SERVER_ADDRESS = '0.0.0.0'
+SERVER_ADDRESS = '::'
 SERVER_PORT = 8000
 SERVER_DEFAULT_TEMPLATE = '/choose'
 
