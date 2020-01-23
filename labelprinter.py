@@ -13,9 +13,9 @@ from brotherprint import BrotherPrint
 class Labelprinter():
     def __init__(self, conf=None, printjob=None):
         if conf:
-            f_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            f_socket.settimeout(conf.PRINTER_TIMEOUT)
-            f_socket.connect((conf.PRINTER_HOST, conf.PRINTER_PORT))
+            f_socket = socket.create_connection(
+                (conf.PRINTER_HOST, conf.PRINTER_PORT), conf.PRINTER_TIMEOUT
+            )
             printjob = BrotherPrint(f_socket)
         assert printjob
         self.printjob = printjob
