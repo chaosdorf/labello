@@ -38,7 +38,8 @@ const rules = [
   },
   {
     test: /\.(jpg|jpeg|png|woff|woff2|eot|ttf|svg)$/,
-    loader: 'url-loader?limit=8192',
+    loader: 'url-loader',
+    options: {limit: 8192},
   },
 ];
 
@@ -54,7 +55,7 @@ if (!isDev) {
 module.exports = {
   plugins,
   mode: isDev ? 'development' : 'production',
-  devtool: isDev ? 'cheap-module-eval-source-map' : false,
+  devtool: isDev ? 'cheap-module-source-map' : false,
   entry: {
     main: ['./src/entry.js'],
   },

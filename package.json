@@ -42,16 +42,16 @@
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.5",
     "babel-preset-joblift": "^3.0.1",
-    "css-loader": "^2.1.0",
-    "file-loader": "^3.0.1",
+    "css-loader": "^5.0.0",
+    "file-loader": "^6.1.1",
     "inline-css-loader": "^2.1.2",
     "less": "^3.9.0",
-    "less-loader": "^4.0.3",
-    "optimize-css-assets-webpack-plugin": "^5.0.1",
-    "style-loader": "^0.23.1",
-    "url-loader": "^1.1.2",
-    "webpack": "^4.28.1",
-    "webpack-cli": "^3.2.1",
-    "webpack-dev-server": "^3.1.14"
+    "less-loader": "^7.0.2",
+    "optimize-css-assets-webpack-plugin": "^5.0.4",
+    "style-loader": "^2.0.0",
+    "url-loader": "^4.1.1",
+    "webpack": "^5.1.2",
+    "webpack-cli": "^4.0.0",
+    "webpack-dev-server": "^3.11.0"
   }
 }
