@@ -25,11 +25,8 @@ from labelprinter import Labelprinter
 import labelprinterServeConf as conf
 
 if conf.SENTRY_DSN:
-    import raven
-    raven_client = raven.Client(conf.SENTRY_DSN)
-else:
-    raven_client = None
-
+    import sentry_sdk
+    sentry_sdk.init(conf.SENTRY_DSN)
 
 def strip_query(query):
     for key in query.keys():
@@ -105,8 +102,8 @@ class MyHandler(BaseHTTPRequestHandler):
         except IOError as ex:
             self.send_error(404, 'File Not Found: {} {}'.format(self.path, ex))
         except Exception as ex:
-            if raven_client:
-                raven_client.captureException()
+            if "sentry_sdk" in globals():
+                sentry_sdk.capture_exception(ex)
 
             logging.error(log_print("ERROR:", ex))
             import traceback
@@ -188,8 +185,8 @@ class MyHandler(BaseHTTPRequestHandler):
                 )
 
         except Exception as ex:
-            if raven_client:
-                raven_client.captureException()
+            if "sentry_sdk" in globals():
+                sentry_sdk.capture_exception(ex)
 
             logging.error(log_print('ERROR:', ex))
             import traceback
@@ -215,10 +212,6 @@ def main():
         logging.info(log_print('^C received, shutting down server'))
         if server is not None:
             server.socket.close()
-    except Exception as ex:
-        if raven_client:
-            raven_client.captureException()
-        raise ex
 
 
 if __name__ == '__main__':
