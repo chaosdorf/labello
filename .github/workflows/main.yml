@@ -7,6 +7,16 @@ jobs:
     # see https://docs.docker.com/ci-cd/github-actions/
     runs-on: ubuntu-latest
     steps:
+      - name: Determine Image Tags
+        id: tags
+        uses: docker/metadata-action@v4
+        with:
+          images: chaosdorf/labello
+          sep-tags: ','
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
       - name: Cache Docker layers
         uses: actions/cache@v2
         with:
@@ -32,7 +42,7 @@ jobs:
           file: ./Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           push: true
-          tags: chaosdorf/labello:latest, chaosdorf/labello:$GITHUB_REF
+          tags: ${{ steps.tags.output.tags }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
       - name: Image digest
