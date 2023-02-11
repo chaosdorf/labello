@@ -1,7 +1,6 @@
 name: main CI
 on:
   push:
-    branches: [ main ]
 jobs:
   build:
     # see https://docs.docker.com/ci-cd/github-actions/
