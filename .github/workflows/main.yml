@@ -1,7 +1,7 @@
 name: main CI
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
 jobs:
   build:
     # see https://docs.docker.com/ci-cd/github-actions/
@@ -32,7 +32,7 @@ jobs:
           file: ./Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           push: true
-          tags: chaosdorf/labello:latest
+          tags: chaosdorf/labello:latest, chaosdorf/labello:$GITHUB_REF
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
       - name: Image digest
